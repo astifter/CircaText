@@ -37,6 +37,16 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     update_time();
 }
 
+static TextLayer *create_text_layer(GRect r, int fk) {
+    // Create layer and 
+    TextLayer *l = text_layer_create(r);
+    text_layer_set_background_color(l, GColorClear);
+    text_layer_set_text_color(l, GColorWhite);
+    text_layer_set_font(l, fonts_get_system_font(fk));
+    layer_add_child(window_get_root_layer(window), text_layer_get_layer(l));
+    return l;
+}
+
 static void main_window_load(Window *window) {
     // Create blank, black background layer.
     s_bg_layer = text_layer_create(GRect(0, 0, 144, 168));
@@ -48,14 +58,7 @@ static void main_window_load(Window *window) {
     int16_t h = 28;
 
     // Create german text layer.
-    s_german_text_layer = text_layer_create(GRect(0, 0, 144, 168-h));
-    text_layer_set_background_color(s_german_text_layer, GColorClear);
-    text_layer_set_text_color(s_german_text_layer, GColorWhite);
-
-    // Improve the layout to be more like a watchface
-    text_layer_set_font(s_german_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-    layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_german_text_layer));
-    
+    s_german_text_layer = create_text_layer(GRect(0, 0, 144, 168-h), FONT_KEY_GOTHIC_28_BOLD);
 
     // Create time text layer and add it to window.
     s_time_layer = text_layer_create(GRect(0, 168-h, 144, h));
