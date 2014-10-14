@@ -36,11 +36,14 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
 static void main_window_load(Window *window) {
   // Calculate text height for date and time.
-  int16_t h = graphics_text_layout_get_content_size("00:00,", FONT_KEY_GOTHIC_28, GRect(0, 0, 144, 144), GTextOverflowModeTrailingEllipsis, GTextAlignmentRight).h;
+  // int16_t h = graphics_text_layout_get_content_size(
+  //   "00:00,", FONT_KEY_GOTHIC_28, GRect(0, 0, 144, 144), 
+  //   GTextOverflowModeTrailingEllipsis, GTextAlignmentRight).h;
+  int16_t h = 28;    
 
   // Create time TextLayer
   s_time_layer = text_layer_create(GRect(0, 0, 144, 168-h));
-  text_layer_set_background_color(s_time_layer, GColorBlack);
+  text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_text_color(s_time_layer, GColorWhite);
 
   // Improve the layout to be more like a watchface
@@ -50,7 +53,7 @@ static void main_window_load(Window *window) {
 
   // Create time TextLayer
   s_date_layer = text_layer_create(GRect(0, 168-h, 144, h));
-  text_layer_set_background_color(s_date_layer, GColorBlack);
+  text_layer_set_background_color(s_date_layer, GColorClear);
   text_layer_set_text_color(s_date_layer, GColorWhite);
   text_layer_set_text_alignment(s_date_layer, GTextAlignmentRight);
 
