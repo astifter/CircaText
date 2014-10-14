@@ -18,11 +18,13 @@ char* german_fuzzy_text(int hour, int minute) {
         minute += 60;
         hour -= 1;
     }
+    
     int section = minute / 5;
     if (section % 3 == 0)
         addstring(retval, "fünf vor\n", &used, &free);
     if (section % 3 == 2)
         addstring(retval, "fünf nach\n", &used, &free);
+    
     section = section / 3;
     if (section % 4 == 0)
         addstring(retval, "viertel\n", &used, &free);
@@ -30,6 +32,8 @@ char* german_fuzzy_text(int hour, int minute) {
         addstring(retval, "halb\n", &used, &free);
     if (section % 4 == 2)
         addstring(retval, "dreiviertel\n", &used, &free);
+    
+    if (hour > 12) hour -= 12;
     switch (hour+1) {
         case 0:  addstring(retval, "zwölf", &used, &free); break;
         case 1:  addstring(retval, "eins", &used, &free); break;
@@ -45,9 +49,7 @@ char* german_fuzzy_text(int hour, int minute) {
         case 11: addstring(retval, "elf", &used, &free); break;
         case 12: addstring(retval, "zwölf", &used, &free); break;
     }
-    addstring(retval, "\n", &used, &free);
 
-    //printf("used: %d, free: %d, section: %d\n", used, free, section);
     return retval;
 }
 
