@@ -4,6 +4,7 @@
 static Window *s_main_window;
 static TextLayer *s_time_layer;
 static TextLayer *s_date_layer;
+static TextLayer *s_bg_layer;
 
 static void update_time() {
   // Get a tm structure
@@ -35,10 +36,10 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void main_window_load(Window *window) {
-  // Calculate text height for date and time.
-  // int16_t h = graphics_text_layout_get_content_size(
-  //   "00:00,", FONT_KEY_GOTHIC_28, GRect(0, 0, 144, 144), 
-  //   GTextOverflowModeTrailingEllipsis, GTextAlignmentRight).h;
+  s_bg_layer = text_layer_create(GRect(0, 0, 144, 168));
+  text_layer_set_background_color(s_bg_layer, GColorBlack); 
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_bg_layer));
+    
   int16_t h = 28;    
 
   // Create time TextLayer
@@ -66,6 +67,7 @@ static void main_window_unload(Window *window) {
     // Destroy TextLayer
     text_layer_destroy(s_date_layer);
     text_layer_destroy(s_time_layer);
+    text_layer_destroy(s_bg_layer);
 }
 
 static void handle_init(void) {
