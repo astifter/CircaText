@@ -2,8 +2,8 @@
 #include "german_fuzzy_text.h"
 
 static Window *s_main_window;
+static TextLayer *s_german_text_layer;
 static TextLayer *s_time_layer;
-static TextLayer *s_date_layer;
 static TextLayer *s_bg_layer;
 
 static void update_time() {
@@ -12,9 +12,7 @@ static void update_time() {
   struct tm *tick_time = localtime(&temp);
 
   char* buffer = german_fuzzy_text(tick_time->tm_hour, tick_time->tm_min);
-
-  // Display this time on the TextLayer
-  text_layer_set_text(s_time_layer, buffer);
+  text_layer_set_text(s_german_text_layer, buffer);
     
   // Create a long-lived buffer
   static char time[] = "00:00";
@@ -27,8 +25,8 @@ static void update_time() {
     // Use 12 hour format
     strftime(time, sizeof("00:00"), "%I:%M", tick_time);
   }
-    
-  text_layer_set_text(s_date_layer, time);
+  // Display time in respective layer.
+  text_layer_set_text(s_time_layer, time);
 }
  
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -43,30 +41,30 @@ static void main_window_load(Window *window) {
   int16_t h = 28;    
 
   // Create time TextLayer
-  s_time_layer = text_layer_create(GRect(0, 0, 144, 168-h));
-  text_layer_set_background_color(s_time_layer, GColorClear);
-  text_layer_set_text_color(s_time_layer, GColorWhite);
+  s_german_text_layer = text_layer_create(GRect(0, 0, 144, 168-h));
+  text_layer_set_background_color(s_german_text_layer, GColorClear);
+  text_layer_set_text_color(s_german_text_layer, GColorWhite);
 
   // Improve the layout to be more like a watchface
-  text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
+  text_layer_set_font(s_german_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_german_text_layer));
     
 
   // Create time TextLayer
-  s_date_layer = text_layer_create(GRect(0, 168-h, 144, h));
-  text_layer_set_background_color(s_date_layer, GColorClear);
-  text_layer_set_text_color(s_date_layer, GColorWhite);
-  text_layer_set_text_alignment(s_date_layer, GTextAlignmentRight);
+  s_time_layer = text_layer_create(GRect(0, 168-h, 144, h));
+  text_layer_set_background_color(s_time_layer, GColorClear);
+  text_layer_set_text_color(s_time_layer, GColorWhite);
+  text_layer_set_text_alignment(s_time_layer, GTextAlignmentRight);
 
   // Improve the layout to be more like a watchface
-  text_layer_set_font(s_date_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28));
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
+  text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28));
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
 }
  
 static void main_window_unload(Window *window) {
     // Destroy TextLayer
-    text_layer_destroy(s_date_layer);
     text_layer_destroy(s_time_layer);
+    text_layer_destroy(s_german_text_layer);
     text_layer_destroy(s_bg_layer);
 }
 
