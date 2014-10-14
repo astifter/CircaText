@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "german_fuzzy_text.h"
 
 static Window *s_main_window;
 static TextLayer *s_time_layer;
@@ -8,17 +9,7 @@ static void update_time() {
   time_t temp = time(NULL); 
   struct tm *tick_time = localtime(&temp);
 
-  // Create a long-lived buffer
-  static char buffer[] = "00:00";
-
-  // Write the current hours and minutes into the buffer
-  if(clock_is_24h_style() == true) {
-    // Use 24 hour format
-    strftime(buffer, sizeof("00:00"), "%H:%M", tick_time);
-  } else {
-    // Use 12 hour format
-    strftime(buffer, sizeof("00:00"), "%I:%M", tick_time);
-  }
+  char* buffer = german_fuzzy_text(tick_time.tm_hour, tick_time.tm_min);
 
   // Display this time on the TextLayer
   text_layer_set_text(s_time_layer, buffer);
