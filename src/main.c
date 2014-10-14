@@ -5,7 +5,11 @@
 static Window *s_main_window;
 static TextLayer *s_german_text_layer;
 static TextLayer *s_time_layer;
+static TextLayer *s_date_layer;
 static TextLayer *s_bg_layer;
+
+static char* days[] = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
+static char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
 
 // Updates the text layers displaying the time, date and german text.
 static void update_time() {
@@ -29,6 +33,16 @@ static void update_time() {
     }
     // Display time in respective layer.
     text_layer_set_text(s_time_layer, time);
+    
+    // Use a static (long lived) buffer for the numeric date.
+    static char date[20];
+    snprintf(date, 19, "%s, %d. %s", 
+             days[tick_time->tm_wday-1], 
+             tick_time->tm_mday, 
+             months[tick_time->tm_mon]
+            );
+    // Display date in respective layer.
+    text_layer_set_text(s_date_layer, date);
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -37,7 +51,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     update_time();
 }
 
-static TextLayer *create_text_layer(GRect r, int fk) {
+static TextLayer *create_text_layer(Window *window, GRect r, char *fk) {
     // Create layer and 
     TextLayer *l = text_layer_create(r);
     text_layer_set_background_color(l, GColorClear);
@@ -55,22 +69,23 @@ static void main_window_load(Window *window) {
 
     // 28 is the height of the lower time layer, this is used to bottom-align
     // the text.
-    int16_t h = 28;
+    int16_t h = 31;
 
     // Create german text layer.
-    s_german_text_layer = create_text_layer(GRect(0, 0, 144, 168-h), FONT_KEY_GOTHIC_28_BOLD);
+    s_german_text_layer = create_text_layer(window, GRect(0, 0, 144, 168-h), FONT_KEY_GOTHIC_28_BOLD);
 
     // Create time text layer and add it to window.
-    s_time_layer = text_layer_create(GRect(0, 168-h, 144, h));
-    text_layer_set_background_color(s_time_layer, GColorClear);
-    text_layer_set_text_color(s_time_layer, GColorWhite);
+    s_time_layer = create_text_layer(window, GRect(0, 168-h, 144, h), FONT_KEY_GOTHIC_28);
     text_layer_set_text_alignment(s_time_layer, GTextAlignmentRight);
-    text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28));
-    layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
+    
+    // Create date text layer and add it to window.
+    h = 27;
+    s_date_layer = create_text_layer(window, GRect(0, 168-h, 144, h), FONT_KEY_GOTHIC_24);
 }
 
 static void main_window_unload(Window *window) {
     // Destroy text layers in reverse order.
+    text_layer_destroy(s_date_layer);
     text_layer_destroy(s_time_layer);
     text_layer_destroy(s_german_text_layer);
     text_layer_destroy(s_bg_layer);
