@@ -6,7 +6,7 @@ static Window *s_main_window;
 static TextLayer *s_german_text_layer;
 static TextLayer *s_time_layer;
 static TextLayer *s_date_layer;
-static TextLayer *s_bg_layer;
+static BitmapLayer *s_bg_layer;
 static TextLayer *s_info_layer;
 
 static bool bt_connection;
@@ -75,11 +75,21 @@ static TextLayer *create_text_layer(Window *window, GRect r, char *fk) {
     return l;
 }
 
+static void update_bg_layer(struct Layer *layer, GContext *ctx) {
+    graphics_context_set_fill_color(ctx, GColorBlack);
+    graphics_context_set_stroke_color(ctx, GColorBlack);
+    graphics_fill_rect(ctx, layer_get_frame(layer), 0, 0);
+    graphics_context_set_stroke_color(ctx, GColorWhite);
+    graphics_draw_line(ctx, GPoint(0,168-33-15), GPoint(144,168-33-15));
+    graphics_draw_line(ctx, GPoint(0,168-31), GPoint(144,168-31));
+}
+
 static void main_window_load(Window *window) {
     // Create blank, black background layer.
-    s_bg_layer = text_layer_create(GRect(0, 0, 144, 168));
-    text_layer_set_background_color(s_bg_layer, GColorBlack);
-    layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_bg_layer));
+    s_bg_layer = bitmap_layer_create(GRect(0, 0, 144, 168));
+    bitmap_layer_set_background_color(s_bg_layer, GColorBlack);
+    layer_set_update_proc(bitmap_layer_get_layer(s_bg_layer), update_bg_layer);
+    layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bg_layer));
 
     // 28 is the height of the lower time layer, this is used to bottom-align
     // the text.
@@ -107,7 +117,7 @@ static void main_window_unload(Window *window) {
     text_layer_destroy(s_date_layer);
     text_layer_destroy(s_time_layer);
     text_layer_destroy(s_german_text_layer);
-    text_layer_destroy(s_bg_layer);
+    bitmap_layer_destroy(s_bg_layer);
 }
 
 void handle_bt_event(bool connected) {
