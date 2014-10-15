@@ -11,6 +11,7 @@
         "media": [
             {
                 "file": "images/logo.png",
+                "menuIcon": true,
                 "name": "IMAGE_LOGO",
                 "type": "png"
             }

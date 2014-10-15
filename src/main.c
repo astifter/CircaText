@@ -7,6 +7,10 @@ static TextLayer *s_german_text_layer;
 static TextLayer *s_time_layer;
 static TextLayer *s_date_layer;
 static TextLayer *s_bg_layer;
+static TextLayer *s_info_layer;
+
+static bool bt_connection;
+static BatteryChargeState battery_state;
 
 static char* days[] = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
 static char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
@@ -43,6 +47,16 @@ static void update_time() {
             );
     // Display date in respective layer.
     text_layer_set_text(s_date_layer, date);
+    
+    static char info[80];
+    char* batterystatestring;
+    if (!battery_state.is_plugged) batterystatestring = "";
+    else if (battery_state.is_charging) batterystatestring = " (p, c)";
+    else batterystatestring = " (p)";
+    snprintf(info, 79, "bt: %s -- batt: %d%%%s", bt_connection ? "c" : "d", 
+                                                 battery_state.charge_percent, 
+                                                 batterystatestring);
+    text_layer_set_text(s_info_layer, info);
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -81,14 +95,29 @@ static void main_window_load(Window *window) {
     // Create date text layer and add it to window.
     h = 27;
     s_date_layer = create_text_layer(window, GRect(0, 168-h, 144, h), FONT_KEY_GOTHIC_24);
+    
+    // Create information layer and add it to the window.
+    s_info_layer = create_text_layer(window, GRect(0, 168-33-15, 144, 15), FONT_KEY_GOTHIC_14);
+    text_layer_set_overflow_mode(s_info_layer, GTextOverflowModeTrailingEllipsis);
 }
 
 static void main_window_unload(Window *window) {
     // Destroy text layers in reverse order.
+    text_layer_destroy(s_info_layer);
     text_layer_destroy(s_date_layer);
     text_layer_destroy(s_time_layer);
     text_layer_destroy(s_german_text_layer);
     text_layer_destroy(s_bg_layer);
+}
+
+void handle_bt_event(bool connected) {
+    bt_connection = connected;
+    update_time();
+}
+
+void handle_battery_event(BatteryChargeState s) {
+    battery_state = s;
+    update_time();
 }
 
 static void handle_init(void) {
@@ -101,16 +130,24 @@ static void handle_init(void) {
 
     // Push window onto stack and update text.
     window_stack_push(s_main_window, true);
-    update_time();
 
+    bt_connection = bluetooth_connection_service_peek();
+    bluetooth_connection_service_subscribe(handle_bt_event);
+    battery_state = battery_state_service_peek();
+    battery_state_service_subscribe(handle_battery_event);
+
+    update_time();
     // Subscribe to timer tick, do this only here to not call time update
     // function twice.
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 }
 
 static void handle_deinit(void) {
+    tick_timer_service_unsubscribe();
+    battery_state_service_unsubscribe();
+    bluetooth_connection_service_unsubscribe();
     // Destroy window.
-    window_destroy(s_main_window);
+    window_destroy(s_main_window);    
 }
 
 int main(void) {
