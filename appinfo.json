@@ -1,13 +1,20 @@
 {
     "appKeys": {},
     "capabilities": [
-        ""
+        "location",
+        "configurable"
     ],
     "companyName": "andreas.neustifter@gmail.com",
     "longName": "CircaText",
     "projectType": "native",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "file": "images/logo.png",
+                "name": "IMAGE_LOGO",
+                "type": "png"
+            }
+        ]
     },
     "shortName": "CircaText",
     "uuid": "1d2647c3-26a0-4b9c-9470-a5c275a8e063",
