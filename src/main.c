@@ -169,10 +169,10 @@ static void handle_init(void) {
     // Persistent storage.
     if (persist_exists(BOTTOMSPACE_KEY)) {
         bottomspace = persist_read_int(BOTTOMSPACE_KEY);
-        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "exisiting BOTTOMSPACE_KEY: %d", bottomspace);
+        // app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "exisiting BOTTOMSPACE_KEY: %d", bottomspace);
     } else {
         bottomspace = 3;
-        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "new BOTTOMSPACE_KEY: %d", bottomspace);
+        // app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "new BOTTOMSPACE_KEY: %d", bottomspace);
     }
     
     // Create window and add window handlers.
