@@ -46,7 +46,7 @@ char* german_fuzzy_text(int hour, int minute) {
 
     // This format is inherently 12 hour based, make sure hour is corrected and
     // printed accordingly.
-    if (hour > 12) hour -= 12;
+    if (hour >= 12) hour -= 12;
     switch (hour+1) {
         case 0:  addstring(retval, "zwölf", &used, &free); break;
         case 1:  addstring(retval, "eins", &used, &free); break;
