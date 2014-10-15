@@ -7,7 +7,8 @@ static TextLayer *s_german_text_layer;
 static TextLayer *s_time_layer;
 static TextLayer *s_date_layer;
 static BitmapLayer *s_bg_layer;
-static TextLayer *s_info_layer;
+static TextLayer *s_info1_layer;
+static TextLayer *s_info2_layer;
 
 #define BOTTOMSPACE 3
 
@@ -50,15 +51,20 @@ static void update_time() {
     // Display date in respective layer.
     text_layer_set_text(s_date_layer, date);
     
-    static char info[80];
+    static char bt_info[80];
+    char *statestring;
+    if (bt_connection) statestring = "conn"; else statestring = "disconn";
+    snprintf(bt_info, 79, "bt: %s", statestring);
+    text_layer_set_text(s_info1_layer, bt_info);
+
+    static char batt_info[80];
     char* batterystatestring;
     if (!battery_state.is_plugged) batterystatestring = "";
     else if (battery_state.is_charging) batterystatestring = " (p, c)";
     else batterystatestring = " (p)";
-    snprintf(info, 79, "bt: %s -- batt: %d%%%s", bt_connection ? "c" : "d", 
-                                                 battery_state.charge_percent, 
-                                                 batterystatestring);
-    text_layer_set_text(s_info_layer, info);
+    snprintf(batt_info, 79, "batt: %d%%%s", battery_state.charge_percent, 
+                                            batterystatestring);
+    text_layer_set_text(s_info2_layer, batt_info);
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -83,7 +89,7 @@ static void update_bg_layer(struct Layer *layer, GContext *ctx) {
     graphics_fill_rect(ctx, layer_get_frame(layer), 0, 0);
     
     graphics_context_set_stroke_color(ctx, GColorWhite);
-    GRect inforect = layer_get_frame(text_layer_get_layer(s_info_layer));
+    GRect inforect = layer_get_frame(text_layer_get_layer(s_info1_layer));
     uint16_t topline = inforect.origin.y + 3;
     graphics_draw_line(ctx, GPoint(inforect.origin.x, topline), 
                             GPoint(inforect.size.w,   topline));
@@ -131,13 +137,17 @@ static void main_window_load(Window *window) {
     s_date_layer = create_text_layer(window, daterect, FONT_KEY_GOTHIC_24);
     
     // Create information layer and add it to the window.
-    s_info_layer = create_text_layer(window, inforect, FONT_KEY_GOTHIC_14);
-    text_layer_set_overflow_mode(s_info_layer, GTextOverflowModeTrailingEllipsis);
+    s_info1_layer = create_text_layer(window, inforect, FONT_KEY_GOTHIC_14);
+    text_layer_set_overflow_mode(s_info1_layer, GTextOverflowModeTrailingEllipsis);
+    s_info2_layer = create_text_layer(window, inforect, FONT_KEY_GOTHIC_14);
+    text_layer_set_overflow_mode(s_info2_layer, GTextOverflowModeTrailingEllipsis);
+    text_layer_set_text_alignment(s_info2_layer, GTextAlignmentRight);
 }
 
 static void main_window_unload(Window *window) {
     // Destroy text layers in reverse order.
-    text_layer_destroy(s_info_layer);
+    text_layer_destroy(s_info2_layer);
+    text_layer_destroy(s_info1_layer);
     text_layer_destroy(s_date_layer);
     text_layer_destroy(s_time_layer);
     text_layer_destroy(s_german_text_layer);
