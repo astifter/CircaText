@@ -84,30 +84,47 @@ static void update_bg_layer(struct Layer *layer, GContext *ctx) {
     graphics_draw_line(ctx, GPoint(0,168-31), GPoint(144,168-31));
 }
 
+int16_t get_text_size(char *fk) {
+    return graphics_text_layout_get_content_size("00:00", fonts_get_system_font(fk),
+                                                 GRect(0,0,100,100), 
+                                                 GTextOverflowModeTrailingEllipsis,
+                                                 GTextAlignmentLeft).h;
+}
+
 static void main_window_load(Window *window) {
+    int16_t spacer = 3;
+    GRect screensize = layer_get_bounds(window_get_root_layer(window));
+    GRect timerect, daterect, inforect;
+    {
+        int16_t h = get_text_size(FONT_KEY_GOTHIC_28) + spacer;
+        timerect = GRect(0, screensize.size.h-h, screensize.size.w, h);
+    }
+    {
+        int16_t h = get_text_size(FONT_KEY_GOTHIC_24) + spacer;
+        daterect = GRect(0, screensize.size.h-h, screensize.size.w, h);
+    }
+    {
+        int16_t h = get_text_size(FONT_KEY_GOTHIC_14) + spacer;
+        inforect = GRect(0, timerect.origin.y-h, screensize.size.w, h);
+    }
+    
     // Create blank, black background layer.
-    s_bg_layer = bitmap_layer_create(GRect(0, 0, 144, 168));
-    bitmap_layer_set_background_color(s_bg_layer, GColorBlack);
+    s_bg_layer = bitmap_layer_create(screensize);
     layer_set_update_proc(bitmap_layer_get_layer(s_bg_layer), update_bg_layer);
     layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bg_layer));
 
-    // 28 is the height of the lower time layer, this is used to bottom-align
-    // the text.
-    int16_t h = 31;
-
     // Create german text layer.
-    s_german_text_layer = create_text_layer(window, GRect(0, 0, 144, 168-h), FONT_KEY_GOTHIC_28_BOLD);
+    s_german_text_layer = create_text_layer(window, screensize, FONT_KEY_GOTHIC_28_BOLD);
 
     // Create time text layer and add it to window.
-    s_time_layer = create_text_layer(window, GRect(0, 168-h, 144, h), FONT_KEY_GOTHIC_28);
+    s_time_layer = create_text_layer(window, timerect, FONT_KEY_GOTHIC_28);
     text_layer_set_text_alignment(s_time_layer, GTextAlignmentRight);
     
     // Create date text layer and add it to window.
-    h = 27;
-    s_date_layer = create_text_layer(window, GRect(0, 168-h, 144, h), FONT_KEY_GOTHIC_24);
+    s_date_layer = create_text_layer(window, daterect, FONT_KEY_GOTHIC_24);
     
     // Create information layer and add it to the window.
-    s_info_layer = create_text_layer(window, GRect(0, 168-33-15, 144, 15), FONT_KEY_GOTHIC_14);
+    s_info_layer = create_text_layer(window, inforect, FONT_KEY_GOTHIC_14);
     text_layer_set_overflow_mode(s_info_layer, GTextOverflowModeTrailingEllipsis);
 }
 
