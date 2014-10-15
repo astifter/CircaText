@@ -10,7 +10,8 @@ static BitmapLayer *s_bg_layer;
 static TextLayer *s_info1_layer;
 static TextLayer *s_info2_layer;
 
-#define BOTTOMSPACE 3
+#define BOTTOMSPACE_KEY 1
+static int bottomspace;
 
 static bool bt_connection;
 static BatteryChargeState battery_state;
@@ -110,11 +111,11 @@ static void main_window_load(Window *window) {
     GRect timerect, daterect, inforect;
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_28);
-        timerect = GRect(0, screensize.size.h-h-BOTTOMSPACE, screensize.size.w, h+BOTTOMSPACE);
+        timerect = GRect(0, screensize.size.h-h-bottomspace, screensize.size.w, h+bottomspace);
     }
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_24);
-        daterect = GRect(0, screensize.size.h-h-BOTTOMSPACE, screensize.size.w, h+BOTTOMSPACE);
+        daterect = GRect(0, screensize.size.h-h-bottomspace, screensize.size.w, h+bottomspace);
     }
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_14);
@@ -165,6 +166,15 @@ void handle_battery_event(BatteryChargeState s) {
 }
 
 static void handle_init(void) {
+    // Persistent storage.
+    if (persist_exists(BOTTOMSPACE_KEY)) {
+        bottomspace = persist_read_int(BOTTOMSPACE_KEY);
+        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "exisiting BOTTOMSPACE_KEY: %d", bottomspace);
+    } else {
+        bottomspace = 3;
+        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "new BOTTOMSPACE_KEY: %d", bottomspace);
+    }
+    
     // Create window and add window handlers.
     s_main_window = window_create();
     window_set_window_handlers(s_main_window, (WindowHandlers){
@@ -187,6 +197,8 @@ static void handle_init(void) {
 }
 
 static void handle_deinit(void) {
+    persist_write_int(BOTTOMSPACE_KEY, bottomspace);
+    
     tick_timer_service_unsubscribe();
     battery_state_service_unsubscribe();
     bluetooth_connection_service_unsubscribe();

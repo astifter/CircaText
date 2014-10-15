@@ -1,7 +1,6 @@
 {
     "appKeys": {},
     "capabilities": [
-        "location",
         "configurable"
     ],
     "companyName": "andreas.neustifter@gmail.com",
