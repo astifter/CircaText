@@ -1,5 +1,7 @@
 {
-    "appKeys": {},
+    "appKeys": {
+        "BOTTOMSPACE_KEY": 1
+    },
     "capabilities": [
         "configurable"
     ],

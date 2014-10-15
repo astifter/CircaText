@@ -165,6 +165,17 @@ void handle_battery_event(BatteryChargeState s) {
     update_time();
 }
 
+void in_received_handler(DictionaryIterator *received, void *context) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "in_received_handler called");
+    // Check for fields you expect to receive.
+    // Tuple *text_tuple = dict_find(received, BOTTOMSPACE_KEY);
+
+    // Act on the found fields received.
+    //if (text_tuple) {
+    //    APP_LOG(APP_LOG_LEVEL_DEBUG, "BOTTOMSPACE_KEY: %s", text_tuple->value->cstring);
+    //}
+}
+
 static void handle_init(void) {
     // Persistent storage.
     if (persist_exists(BOTTOMSPACE_KEY)) {
@@ -194,6 +205,9 @@ static void handle_init(void) {
     // Subscribe to timer tick, do this only here to not call time update
     // function twice.
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+    
+    app_message_register_inbox_received(in_received_handler);
+    app_message_open(64, 64);
 }
 
 static void handle_deinit(void) {
