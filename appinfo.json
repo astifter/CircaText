@@ -1,9 +1,7 @@
 {
-    "appKeys": {
-        "BOTTOMSPACE_KEY": 1
-    },
+    "appKeys": {},
     "capabilities": [
-        "configurable"
+        ""
     ],
     "companyName": "andreas.neustifter@gmail.com",
     "longName": "CircaText",
