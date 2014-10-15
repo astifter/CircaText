@@ -9,6 +9,8 @@ static TextLayer *s_date_layer;
 static BitmapLayer *s_bg_layer;
 static TextLayer *s_info_layer;
 
+#define BOTTOMSPACE 3
+
 static bool bt_connection;
 static BatteryChargeState battery_state;
 
@@ -79,9 +81,15 @@ static void update_bg_layer(struct Layer *layer, GContext *ctx) {
     graphics_context_set_fill_color(ctx, GColorBlack);
     graphics_context_set_stroke_color(ctx, GColorBlack);
     graphics_fill_rect(ctx, layer_get_frame(layer), 0, 0);
+    
     graphics_context_set_stroke_color(ctx, GColorWhite);
-    graphics_draw_line(ctx, GPoint(0,168-33-15), GPoint(144,168-33-15));
-    graphics_draw_line(ctx, GPoint(0,168-31), GPoint(144,168-31));
+    GRect inforect = layer_get_frame(text_layer_get_layer(s_info_layer));
+    uint16_t topline = inforect.origin.y + 3;
+    graphics_draw_line(ctx, GPoint(inforect.origin.x, topline), 
+                            GPoint(inforect.size.w,   topline));
+    uint16_t bottomline = inforect.origin.y + inforect.size.h + 1;
+    graphics_draw_line(ctx, GPoint(inforect.origin.x, bottomline), 
+                            GPoint(inforect.size.w,   bottomline));
 }
 
 int16_t get_text_size(char *fk) {
@@ -92,20 +100,19 @@ int16_t get_text_size(char *fk) {
 }
 
 static void main_window_load(Window *window) {
-    int16_t spacer = 3;
     GRect screensize = layer_get_bounds(window_get_root_layer(window));
     GRect timerect, daterect, inforect;
     {
-        int16_t h = get_text_size(FONT_KEY_GOTHIC_28) + spacer;
-        timerect = GRect(0, screensize.size.h-h, screensize.size.w, h);
+        int16_t h = get_text_size(FONT_KEY_GOTHIC_28);
+        timerect = GRect(0, screensize.size.h-h-BOTTOMSPACE, screensize.size.w, h+BOTTOMSPACE);
     }
     {
-        int16_t h = get_text_size(FONT_KEY_GOTHIC_24) + spacer;
-        daterect = GRect(0, screensize.size.h-h, screensize.size.w, h);
+        int16_t h = get_text_size(FONT_KEY_GOTHIC_24);
+        daterect = GRect(0, screensize.size.h-h-BOTTOMSPACE, screensize.size.w, h+BOTTOMSPACE);
     }
     {
-        int16_t h = get_text_size(FONT_KEY_GOTHIC_14) + spacer;
-        inforect = GRect(0, timerect.origin.y-h, screensize.size.w, h);
+        int16_t h = get_text_size(FONT_KEY_GOTHIC_14);
+        inforect = GRect(0, daterect.origin.y-h, screensize.size.w, h);
     }
     
     // Create blank, black background layer.
