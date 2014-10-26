@@ -19,7 +19,7 @@
     "shortName": "CircaText",
     "uuid": "1d2647c3-26a0-4b9c-9470-a5c275a8e063",
     "versionCode": 1,
-    "versionLabel": "1.0",
+    "versionLabel": "1.1",
     "watchapp": {
         "watchface": true
     }

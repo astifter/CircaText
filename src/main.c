@@ -19,8 +19,8 @@ static bool               bt_state;
 static BatteryChargeState battery_state;
 
 // Static display texts.
-const static char* days[] = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
-const static char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
+static const char* days[] = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
+static const char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
 
 // Updates the layers and writes all sorts of text.
 static void update_time() {
