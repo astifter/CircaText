@@ -18,12 +18,14 @@ static int bottomspace;
 static bool               bt_state;
 static BatteryChargeState battery_state;
 
+// Static display texts.
 const static char* days[] = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
 const static char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
 
 // Updates the layers and writes all sorts of text.
 static void update_time() {
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time()");
+
     // Get a tm structure from current time.
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
@@ -136,6 +138,7 @@ int16_t get_text_size(char *fk) {
 // Loads and sets up main window.
 static void main_window_load(Window *window) {
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void main_window_load(Window *window)");
+
     GRect screensize = layer_get_bounds(window_get_root_layer(window));
     GRect timerect, daterect, inforect;
     {
@@ -177,6 +180,7 @@ static void main_window_load(Window *window) {
 // Destroy allocated data.
 static void main_window_unload(Window *window) {
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void main_window_unload(Window *window)");
+
     // Destroy text layers in reverse order.
     text_layer_destroy(s_info2_layer);
     text_layer_destroy(s_info1_layer);
@@ -202,10 +206,11 @@ void handle_battery_event(BatteryChargeState s) {
 
 static void handle_init(void) {
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_init(void)");
+
     // Persistent storage.
     if (persist_exists(BOTTOMSPACE_KEY)) {
         bottomspace = persist_read_int(BOTTOMSPACE_KEY);
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "exisiting BOTTOMSPACE_KEY: %d", bottomspace);
+        // app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "exisiting BOTTOMSPACE_KEY: %d", bottomspace);
     } else {
         bottomspace = 3;
         // app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "new BOTTOMSPACE_KEY: %d", bottomspace);
@@ -234,17 +239,21 @@ static void handle_init(void) {
 
 static void handle_deinit(void) {
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_deinit(void)");
+
+    // Persistent storage.
     persist_write_int(BOTTOMSPACE_KEY, bottomspace);
     
     tick_timer_service_unsubscribe();
     battery_state_service_unsubscribe();
     bluetooth_connection_service_unsubscribe();
+
     // Destroy window.
     window_destroy(s_main_window);    
 }
 
 int main(void) {
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "int main(void)");
+
     handle_init();
     app_event_loop();
     handle_deinit();
