@@ -1,5 +1,5 @@
 #include <pebble.h>
-#include "german_fuzzy_text.h"
+#include "german_fuzzy_text_v1.h"
 
 // Static pointers for window and layers.
 static Window      *s_main_window;

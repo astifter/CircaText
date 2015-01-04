@@ -1,4 +1,5 @@
 .lock-waf_darwin_build
 build/
-src/german_fuzzy_text_test
-src/german_fuzzy_text_test.out
+test/german_fuzzy_text_test
+test/german_fuzzy_text_test.out
+test/german_fuzzy_text_test.dSYM
