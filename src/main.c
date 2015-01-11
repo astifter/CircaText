@@ -1,5 +1,58 @@
 #include <pebble.h>
 #include "german_fuzzy_text_v1.h"
+#include "german_fuzzy_text_v2.h"
+
+static void update_time();
+
+static AppSync sync;
+static uint8_t sync_buffer[124];
+static tttp time_to_text_pointer = german_fuzzy_text;
+
+enum {
+  SELECTED_VERISON = 0x0,
+  BOTTOMSPACE_KEY = 0x1
+};      
+
+void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
+  //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "key: %u", (unsigned int)key);
+  switch (key) {
+    case SELECTED_VERISON: {
+      const char* version = new_tuple->value->cstring;
+      //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "selected version: %s", version);
+      persist_write_string(SELECTED_VERISON, version);
+      if (strcmp(version, "Regular") == 0)
+        time_to_text_pointer = german_fuzzy_text;
+      if (strcmp(version, "Short") == 0)
+        time_to_text_pointer = german_fuzzy_text_v2;
+      } break;
+  }
+  update_time();
+}
+
+// http://stackoverflow.com/questions/21150193/logging-enums-on-the-pebble-watch/21172222#21172222
+char *translate_error(AppMessageResult result) {
+  switch (result) {
+    case APP_MSG_OK: return "APP_MSG_OK";
+    case APP_MSG_SEND_TIMEOUT: return "APP_MSG_SEND_TIMEOUT";
+    case APP_MSG_SEND_REJECTED: return "APP_MSG_SEND_REJECTED";
+    case APP_MSG_NOT_CONNECTED: return "APP_MSG_NOT_CONNECTED";
+    case APP_MSG_APP_NOT_RUNNING: return "APP_MSG_APP_NOT_RUNNING";
+    case APP_MSG_INVALID_ARGS: return "APP_MSG_INVALID_ARGS";
+    case APP_MSG_BUSY: return "APP_MSG_BUSY";
+    case APP_MSG_BUFFER_OVERFLOW: return "APP_MSG_BUFFER_OVERFLOW";
+    case APP_MSG_ALREADY_RELEASED: return "APP_MSG_ALREADY_RELEASED";
+    case APP_MSG_CALLBACK_ALREADY_REGISTERED: return "APP_MSG_CALLBACK_ALREADY_REGISTERED";
+    case APP_MSG_CALLBACK_NOT_REGISTERED: return "APP_MSG_CALLBACK_NOT_REGISTERED";
+    case APP_MSG_OUT_OF_MEMORY: return "APP_MSG_OUT_OF_MEMORY";
+    case APP_MSG_CLOSED: return "APP_MSG_CLOSED";
+    case APP_MSG_INTERNAL_ERROR: return "APP_MSG_INTERNAL_ERROR";
+    default: return "UNKNOWN ERROR";
+  }
+}
+
+void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
+  //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %s", translate_error(app_message_error));
+}
 
 // Static pointers for window and layers.
 static Window      *s_main_window;
@@ -11,8 +64,8 @@ static TextLayer   *s_info1_layer;
 static TextLayer   *s_info2_layer;
 
 // Keys and variables for persistens storage.
-#define BOTTOMSPACE_KEY 1
 static int bottomspace;
+static char selectedVersion[64];
 
 // Storage are for phone states.
 static bool               bt_state;
@@ -32,7 +85,7 @@ static void update_time() {
 
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): fetch german text");
     // Use german_fuzzy_text to render German text time and display in layer.
-    char* buffer = german_fuzzy_text(tick_time->tm_hour, tick_time->tm_min);
+    char* buffer = time_to_text_pointer(tick_time->tm_hour, tick_time->tm_min);
     text_layer_set_text(s_german_text_layer, buffer);
 
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display plain time");
@@ -175,6 +228,15 @@ static void main_window_load(Window *window) {
     s_info2_layer = create_text_layer(window, inforect, FONT_KEY_GOTHIC_14);
     text_layer_set_overflow_mode(s_info2_layer, GTextOverflowModeTrailingEllipsis);
     text_layer_set_text_alignment(s_info2_layer, GTextAlignmentRight);
+
+    Tuplet initial_values[] = {
+       TupletCString(SELECTED_VERISON, (const char*)(&selectedVersion[0]))
+    };
+  
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "app_sync_init()");
+    app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values, ARRAY_LENGTH(initial_values),
+        sync_tuple_changed_callback, sync_error_callback, NULL);
+  
 }
 
 // Destroy allocated data.
@@ -188,6 +250,8 @@ static void main_window_unload(Window *window) {
     text_layer_destroy(s_time_layer);
     text_layer_destroy(s_german_text_layer);
     bitmap_layer_destroy(s_bg_layer);
+
+    app_sync_deinit(&sync);
 }
 
 // Receive BT event and update window.
@@ -215,6 +279,10 @@ static void handle_init(void) {
         bottomspace = 3;
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "new BOTTOMSPACE_KEY: %d", bottomspace);
     }
+    if (!persist_exists(SELECTED_VERISON)) {
+        persist_write_string(SELECTED_VERISON, "Regular");
+    }
+    persist_read_string(SELECTED_VERISON, selectedVersion, 64);
     
     // Create window and add window handlers.
     s_main_window = window_create();
@@ -222,6 +290,8 @@ static void handle_init(void) {
       .load = main_window_load,
       .unload = main_window_unload
     });
+
+    app_message_open(124, 124);
 
     // Push window onto stack and update text.
     window_stack_push(s_main_window, true);

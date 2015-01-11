@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CircaText Einstellungen</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+  </head>
+  <body>
+      <h1>CircaText Konfiguration</h1>
+      <h2>Text Varianten</h2>
+      Folgende Varianten stehen zur Verfügung:
+      <dl>
+        <dt>Normal</dt><dd>"fünf vor viertel drei"</dd>
+        <dt>Kurz</dt><dd>"zehn nach zwei"</dd>
+      </dl>
+
+      <label for="selectedVersion" style="display: block; padding-bottom: 0.5em; width: 100%;">Variante?</label>
+      <select name="selectedVersion" id="selectedVersion" style="color: #000; width: 100%;">
+        <option value="Regular">Normal</option>
+        <option value="Short">Kurz</option>
+      </select>
+        
+      <button type="submit" id="b-submit" style="width: 100%;">Submit</button>
+
+    <script>
+      function saveOptions() {
+        var options = {
+          'selectedVersion': $("#selectedVersion").val()
+        }
+        return options;
+      }
+
+      $(document).ready(function() {
+        var priorSearch = getURLVariable('selectedVersion');
+        priorSearch = decodeURI(priorSearch);
+
+        if (priorSearch) {
+          $('#selectedVersion option').removeAttr('selected');
+          $('#selectedVersion').val(priorSearch).change();
+        }
+
+        $("#b-submit").click(function() {
+          var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
+          document.location = location;
+        });
+      });
+
+      function getURLVariable(name) {
+        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)",
+            regex = new RegExp(regexS),
+            results = regex.exec(window.location.href);
+        if (results == null) return "";
+        else return results[1];
+      }
+    </script>
+  </body>
+</html>
