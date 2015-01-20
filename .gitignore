@@ -1,6 +1,7 @@
 .lock-waf_darwin_build
 build/
 test/german_fuzzy_text_test
-test/german_fuzzy_text_test.out
-test/german_fuzzy_text_test.dSYM
+test/stringbuffer_test
+test/*.out
+test/*.dSYM
 *.sw?
