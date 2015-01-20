@@ -3,3 +3,4 @@ build/
 test/german_fuzzy_text_test
 test/german_fuzzy_text_test.out
 test/german_fuzzy_text_test.dSYM
+*.sw?
