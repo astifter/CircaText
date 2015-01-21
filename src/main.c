@@ -2,6 +2,16 @@
 #include "german_fuzzy_text_v1.h"
 #include "german_fuzzy_text_v2.h"
 #include "time_to_string_function.h"
+#include "stringbuffer.h"
+
+// Static pointers for window and layers.
+static Window      *s_main_window;
+static TextLayer   *s_german_text_layer;
+static TextLayer   *s_time_layer;
+static TextLayer   *s_date_layer;
+static BitmapLayer *s_bg_layer;
+static TextLayer   *s_info1_layer;
+static TextLayer   *s_info2_layer;
 
 static void update_time();
 
@@ -12,22 +22,39 @@ static tttp time_to_text_pointer = german_fuzzy_text;
 enum {
   SELECTED_VERISON = 0x0,
   BOTTOMSPACE_KEY = 0x1
-};      
+};
+
+void update_time_callback(void* data) {
+  app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "update_time()");
+  update_time();
+}
 
 void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
   //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "key: %u", (unsigned int)key);
+  static stringbuffer sb;
+  stringbuffer_init(&sb);
+  stringbuffer_append(&sb, "Einstellungen:\n");
+  
   switch (key) {
     case SELECTED_VERISON: {
-      const char* version = new_tuple->value->cstring;
-      //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "selected version: %s", version);
-      persist_write_string(SELECTED_VERISON, version);
-      if (strcmp(version, "Regular") == 0)
-        time_to_text_pointer = german_fuzzy_text;
-      if (strcmp(version, "Short") == 0)
-        time_to_text_pointer = german_fuzzy_text_v2;
-      } break;
+        const char* version = new_tuple->value->cstring;
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "selected version: %s", version);
+        persist_write_string(SELECTED_VERISON, version);
+        if (strcmp(version, "Regular") == 0) {
+          time_to_text_pointer = german_fuzzy_text;
+          stringbuffer_append(&sb, "Text: Normal\n");
+        }
+        if (strcmp(version, "Short") == 0) {
+          time_to_text_pointer = german_fuzzy_text_v2;
+          stringbuffer_append(&sb, "Text: Kurz\n");
+        }
+    } break;
   }
-  update_time();
+  light_enable_interaction();
+  app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "%s", sb.retval);
+  text_layer_set_text(s_german_text_layer, sb.retval);
+
+  app_timer_register(4000, update_time_callback, NULL);
 }
 
 // http://stackoverflow.com/questions/21150193/logging-enums-on-the-pebble-watch/21172222#21172222
@@ -54,15 +81,6 @@ char *translate_error(AppMessageResult result) {
 void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
   //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %s", translate_error(app_message_error));
 }
-
-// Static pointers for window and layers.
-static Window      *s_main_window;
-static TextLayer   *s_german_text_layer;
-static TextLayer   *s_time_layer;
-static TextLayer   *s_date_layer;
-static BitmapLayer *s_bg_layer;
-static TextLayer   *s_info1_layer;
-static TextLayer   *s_info2_layer;
 
 // Keys and variables for persistens storage.
 static int bottomspace;
