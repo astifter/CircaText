@@ -1,7 +1,7 @@
 #include <pebble.h>
 #include "german_fuzzy_text_v1.h"
 #include "german_fuzzy_text_v2.h"
-#include "time_to_string_function.h"
+#include "timetotextpointer.h"
 #include "stringbuffer.h"
 
 // Static pointers for window and layers.

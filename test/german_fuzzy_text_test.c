@@ -2,7 +2,7 @@
 
 #include "german_fuzzy_text_v1.h"
 #include "german_fuzzy_text_v2.h"
-#include "time_to_string_function.h"
+#include "timetotextpointer.h"
 
 int main (int argc, char** argv) {
     // Depending on argument select time to text function.
