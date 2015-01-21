@@ -1,3 +1,5 @@
+#pragma once
+
 // Buffers can hold at most MAXLEN-1 characters.
 #define MAXLEN 80
 
