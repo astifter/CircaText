@@ -3,6 +3,7 @@
 #include "german_fuzzy_text_v2.h"
 #include "timetotextpointer.h"
 #include "stringbuffer.h"
+#include "storage.h"
 
 // Static pointers for window and layers.
 static Window      *s_main_window;
@@ -37,14 +38,13 @@ void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, con
   
   switch (key) {
     case SELECTED_VERISON: {
-        const char* version = new_tuple->value->cstring;
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "selected version: %s", version);
-        persist_write_string(SELECTED_VERISON, version);
-        if (strcmp(version, "Regular") == 0) {
+        strcpy(storage.selectedVersion, new_tuple->value->cstring);
+        storage_persist();
+        if (strcmp(storage.selectedVersion, "Regular") == 0) {
           time_to_text_pointer = german_fuzzy_text;
           stringbuffer_append(&sb, "Text: Normal\n");
         }
-        if (strcmp(version, "Short") == 0) {
+        if (strcmp(storage.selectedVersion, "Short") == 0) {
           time_to_text_pointer = german_fuzzy_text_v2;
           stringbuffer_append(&sb, "Text: Kurz\n");
         }
@@ -81,10 +81,6 @@ char *translate_error(AppMessageResult result) {
 void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
   //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %s", translate_error(app_message_error));
 }
-
-// Keys and variables for persistens storage.
-static int bottomspace;
-static char selectedVersion[64];
 
 // Storage are for phone states.
 static bool               bt_state;
@@ -215,11 +211,11 @@ static void main_window_load(Window *window) {
     GRect timerect, daterect, inforect;
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_28);
-        timerect = GRect(0, screensize.size.h-h-bottomspace, screensize.size.w, h+bottomspace);
+        timerect = GRect(0, screensize.size.h-h-storage.bottomspace, screensize.size.w, h+storage.bottomspace);
     }
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_24);
-        daterect = GRect(0, screensize.size.h-h-bottomspace, screensize.size.w, h+bottomspace);
+        daterect = GRect(0, screensize.size.h-h-storage.bottomspace, screensize.size.w, h+storage.bottomspace);
     }
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_14);
@@ -249,7 +245,7 @@ static void main_window_load(Window *window) {
     text_layer_set_text_alignment(s_info2_layer, GTextAlignmentRight);
 
     Tuplet initial_values[] = {
-       TupletCString(SELECTED_VERISON, (const char*)(&selectedVersion[0]))
+       TupletCString(SELECTED_VERISON, (const char*)(storage.selectedVersion))
     };
   
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "app_sync_init()");
@@ -290,18 +286,7 @@ void handle_battery_event(BatteryChargeState s) {
 static void handle_init(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_init(void)");
 
-    // Persistent storage.
-    if (persist_exists(BOTTOMSPACE_KEY)) {
-        bottomspace = persist_read_int(BOTTOMSPACE_KEY);
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "exisiting BOTTOMSPACE_KEY: %d", bottomspace);
-    } else {
-        bottomspace = 3;
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "new BOTTOMSPACE_KEY: %d", bottomspace);
-    }
-    if (!persist_exists(SELECTED_VERISON)) {
-        persist_write_string(SELECTED_VERISON, "Regular");
-    }
-    persist_read_string(SELECTED_VERISON, selectedVersion, 64);
+    storage_init();
     
     // Create window and add window handlers.
     s_main_window = window_create();
@@ -329,8 +314,7 @@ static void handle_init(void) {
 static void handle_deinit(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_deinit(void)");
 
-    // Persistent storage.
-    persist_write_int(BOTTOMSPACE_KEY, bottomspace);
+    storage_deinit();
     
     tick_timer_service_unsubscribe();
     battery_state_service_unsubscribe();
