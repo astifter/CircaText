@@ -1,9 +1,12 @@
 #include <stdio.h>
 
+// Include the stringbuffer handling.
 #include "stringbuffer.h"
 static stringbuffer sbval;
 
 // Takes hours and minutes and converts them to a German time text.
+// This is the version that provides a more precise (albeit more verbose)
+// version of the time.
 char* german_fuzzy_text(int hour, int minute) {
     // Prepare string for returning, reset used and free counters.
     stringbuffer_init(&sbval);
@@ -15,6 +18,9 @@ char* german_fuzzy_text(int hour, int minute) {
     if (minute < 0) {
         minute += 60;
         hour -= 1;
+    }
+    if (hour < 0) {
+        hour += 24;
     }
 
     // First divide minutes into 12 sections, for the sections 0, 3, 6, 9 use
@@ -39,7 +45,6 @@ char* german_fuzzy_text(int hour, int minute) {
     // printed accordingly.
     if (hour >= 12) hour -= 12;
     switch (hour+1) {
-        case 0:  stringbuffer_append(&sbval, "zwölf"); break;
         case 1:  stringbuffer_append(&sbval, "eins"); break;
         case 2:  stringbuffer_append(&sbval, "zwei"); break;
         case 3:  stringbuffer_append(&sbval, "drei"); break;
