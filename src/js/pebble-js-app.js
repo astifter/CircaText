@@ -3,7 +3,7 @@ var selectedVersion = window.localStorage.getItem('selectedVersion') ? window.lo
 
 // On showing the configuration, open webpage with stored selectedVersion.
 Pebble.addEventListener('showConfiguration', function() {
-    Pebble.openURL('https://www.googledrive.com/host/0B97_0Rk-p4m0WVhRcFVlc2xPM00?selectedVersion=' + selectedVersion);
+    Pebble.openURL('http://astifter.github.io/CircaText/resources/configurable.html?selectedVersion=' + selectedVersion);
 });
 
 // On closing the configuration read the options store them appropriately and
