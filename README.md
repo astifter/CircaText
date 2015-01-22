@@ -16,6 +16,7 @@ Interesse? https://github.com/astifter/CircaText
 How to Release
 --------------
 
+1. Increment version number in appinfo.json.
 1. Make sure everything works by executing ./build_test_install.sh in the root folder, this:
    - Builds the watchface.
    - Runs the tests.
