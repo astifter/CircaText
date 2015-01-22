@@ -1,8 +1,7 @@
 CircaText
 =========
 
-Ein österreichisches Pebble-Watchface das die ungefähre Zeit in natürlicher Sprache anzeigt. Derzeit sind 2 Varianten des Texts verfügbar.
-(Und zusätzlich Tag, Wochentag, Monat, Bluetooth-Status, Akku-Status und die numerische Zeit.)
+Ein österreichisches Pebble-Watchface das die ungefähre Zeit in natürlicher Sprache anzeigt.
 
 Pebble App Store: https://apps.getpebble.com/applications/543eb5b1ffbc4e01d400001d
 
