@@ -22,7 +22,7 @@ How to Release
    - Installs the watchface.
 2. Make sure configuration works as expected.
 3. Make sure everything is on GitHub.
-4. Rename build binary from build/CircaText.pbw to build/CircaText.<major>.<minor>.pbw.
+4. Rename build binary from build/CircaText.pbw to build/CircaText.\<major\>.\<minor\>.pbw.
 5. Create GitHub release, upload renamed binary.
 6. Create Pebble App Store release:
    - Make sure the release notes are of format:
