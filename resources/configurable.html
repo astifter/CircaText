@@ -15,12 +15,12 @@
     </dl>
 
     <!-- selectedVersion dropdown -->
-    <select name="selectedVersion" id="selectedVersion" style="color: #000; width: 100%;">
+    <select disabled name="selectedVersion" id="selectedVersion" style="color: #000; width: 100%;">
       <option value="Regular">Normal</option>
       <option value="Short">Kurz</option>
     </select>
       
-    <button type="submit" id="b-submit" style="width: 100%;">Submit</button>
+    <button disabled type="submit" id="b-submit" style="width: 100%;">Submit</button>
 
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script>
@@ -51,6 +51,8 @@
           var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
           document.location = location;
         });
+        $("#b-submit").enable();
+        $('#selectedVersion').enable();
       });
 
       // This fetches a value from and URL.
