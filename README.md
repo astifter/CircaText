@@ -26,3 +26,4 @@ How to Release
 5. Create GitHub release, upload renamed binary.
 6. Create Pebble App Store release:
    - Make sure the release notes are of format:
+     V\<major\>.\<minor\> \<description\> (\<8-digit SHA1 of GitHub release\>)
