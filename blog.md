@@ -1,7 +1,7 @@
----
-layout: default
-title: Developer Blog
----
+#---
+#layout: default
+#title: Developer Blog
+#---
 
 <div class="home">
 
