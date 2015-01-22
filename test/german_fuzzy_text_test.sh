@@ -5,6 +5,7 @@ set -x
 compareandshow() {
     if ! diff -qs "$1" "$2"; then
         diff -u "$1" "$2" | head -n 20
+        exit -1
     fi
 }
 
