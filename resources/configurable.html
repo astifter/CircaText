@@ -51,8 +51,8 @@
           var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
           document.location = location;
         });
-        $("#b-submit").enable();
-        $('#selectedVersion').enable();
+        $("#b-submit").prop('disabled', false);
+        $('#selectedVersion').prop('disabled', false);
       });
 
       // This fetches a value from and URL.
