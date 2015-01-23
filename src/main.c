@@ -12,9 +12,10 @@ static BitmapLayer *s_bg_layer;
 static TextLayer   *s_info1_layer;
 static TextLayer   *s_info2_layer;
 
-static void update_time();
+static bool update_time_enabled = false;
+static void update_time(void);
 
-void update_time_callback(void* data) {
+void update_time_timer_callback(void* data) {
   app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "update_time()");
   update_time();
 }
@@ -23,7 +24,7 @@ void appsync_value_changed_callback(void) {
   light_enable_interaction();
   text_layer_set_text(s_german_text_layer, appsync_values.text);
 
-  app_timer_register(4000, update_time_callback, NULL);
+  app_timer_register(4000, update_time_timer_callback, NULL);
 }
 
 // Storage are for phone states.
@@ -35,8 +36,12 @@ static const char* days[] = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
 static const char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
 
 // Updates the layers and writes all sorts of text.
-static void update_time() {
+static void update_time(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time()");
+    if (!update_time_enabled) {
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): not done, not enabled");
+        return;
+    }
 
     // Get a tm structure from current time.
     time_t temp = time(NULL);
@@ -240,6 +245,7 @@ static void handle_init(void) {
     battery_state = battery_state_service_peek();
     battery_state_service_subscribe(handle_battery_event);
 
+    update_time_enabled = true;
     update_time();
     // Subscribe to timer tick, do this only here to not call time update
     // function twice.
