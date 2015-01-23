@@ -13,7 +13,7 @@ static BitmapLayer *s_bg_layer;
 static TextLayer   *s_info1_layer;
 static TextLayer   *s_info2_layer;
 
-static bool update_time_enabled = false;
+static bool ui_updates_enabled = false;
 static void update_time(void);
 
 void update_time_timer_callback(void* data) {
@@ -22,10 +22,16 @@ void update_time_timer_callback(void* data) {
 }
 
 void appsync_value_changed_callback(void) {
-  light_enable_interaction();
-  text_layer_set_text(s_german_text_layer, appsync_values.text);
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void appsync_value_changed_callback(void)");
+    if (!ui_updates_enabled) {
+        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): not done, not enabled");
+        return;
+    }
 
-  app_timer_register(4000, update_time_timer_callback, NULL);
+    light_enable_interaction();
+    text_layer_set_text(s_german_text_layer, appsync_values.text);
+  
+    app_timer_register(4000, update_time_timer_callback, NULL);
 }
 
 // Static display texts.
@@ -34,9 +40,9 @@ static const char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul",
 
 // Updates the layers and writes all sorts of text.
 static void update_time(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time()");
-    if (!update_time_enabled) {
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): not done, not enabled");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time()");
+    if (!ui_updates_enabled) {
+        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): not done, not enabled");
         return;
     }
 
@@ -44,12 +50,12 @@ static void update_time(void) {
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
 
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): fetch german text");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): fetch german text");
     // Use german_fuzzy_text to render German text time and display in layer.
     char* buffer = appsync_values.time_to_text_pointer(tick_time->tm_hour, tick_time->tm_min);
     text_layer_set_text(s_german_text_layer, buffer);
 
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display plain time");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display plain time");
     // Use a static (long lived) buffer for the numeric time.
     static char time[] = "00:00";
     // Write the current hours and minutes into the buffer, considerung the
@@ -64,10 +70,10 @@ static void update_time(void) {
     
     int weekday = tick_time->tm_wday-1;
     if (weekday < 0) weekday += 7;
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display date");
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): day: %d", weekday);
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): mday: %d", tick_time->tm_mday);
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): month: %d", tick_time->tm_mon);
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display date");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): day: %d", weekday);
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): mday: %d", tick_time->tm_mday);
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): month: %d", tick_time->tm_mon);
     // Use a static (long lived) buffer for the numeric date.
     static char date[80];
     snprintf(date, 80, "%s, %d. %s", 
@@ -79,17 +85,17 @@ static void update_time(void) {
     text_layer_set_text(s_date_layer, date);
     
     // Fetch and print BlueTooth status information.
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display bt info");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display bt info");
     text_layer_set_text(s_info1_layer, get_bt_state());
 
     // Fetch and print battery status information.
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display battery info");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display battery info");
     text_layer_set_text(s_info2_layer, get_battery_state());
 }
 
 // Handles timer ticks.
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void tick_handler(struct tm *tick_time, TimeUnits units_changed)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void tick_handler(struct tm *tick_time, TimeUnits units_changed)");
     // Hand updating to separate method, this method is used at watchface
     // loading as well.
     update_time();
@@ -97,7 +103,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
 // Handles creation of text layers.
 static TextLayer *create_text_layer(Window *window, GRect r, char *fk) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static TextLayer *create_text_layer(Window *window, GRect r, char *fk)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static TextLayer *create_text_layer(Window *window, GRect r, char *fk)");
     // Creates a text layer, sets proper colours, fonts and attaches it to
     // window.
     TextLayer *l = text_layer_create(r);
@@ -110,7 +116,7 @@ static TextLayer *create_text_layer(Window *window, GRect r, char *fk) {
 
 // Updates the background bitmap layer.
 static void update_bg_layer(struct Layer *layer, GContext *ctx) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_bg_layer(struct Layer *layer, GContext *ctx)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_bg_layer(struct Layer *layer, GContext *ctx)");
     // First fill background with black rectangle.
     graphics_context_set_fill_color(ctx, GColorBlack);
     graphics_context_set_stroke_color(ctx, GColorBlack);
@@ -131,7 +137,7 @@ static void update_bg_layer(struct Layer *layer, GContext *ctx) {
 
 // Calculates the text height for a given font.
 int16_t get_text_size(char *fk) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "int16_t get_text_size(char *fk)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "int16_t get_text_size(char *fk)");
     return graphics_text_layout_get_content_size("00:00", fonts_get_system_font(fk),
                                                  GRect(0,0,100,100), 
                                                  GTextOverflowModeTrailingEllipsis,
@@ -140,7 +146,7 @@ int16_t get_text_size(char *fk) {
 
 // Loads and sets up main window.
 static void main_window_load(Window *window) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void main_window_load(Window *window)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void main_window_load(Window *window)");
 
     GRect screensize = layer_get_bounds(window_get_root_layer(window));
     GRect timerect, daterect, inforect;
@@ -178,13 +184,11 @@ static void main_window_load(Window *window) {
     s_info2_layer = create_text_layer(window, inforect, FONT_KEY_GOTHIC_14);
     text_layer_set_overflow_mode(s_info2_layer, GTextOverflowModeTrailingEllipsis);
     text_layer_set_text_alignment(s_info2_layer, GTextAlignmentRight);
-
-    appsync_init(appsync_value_changed_callback);
 }
 
 // Destroy allocated data.
 static void main_window_unload(Window *window) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void main_window_unload(Window *window)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void main_window_unload(Window *window)");
 
     // Destroy text layers in reverse order.
     text_layer_destroy(s_info2_layer);
@@ -193,17 +197,16 @@ static void main_window_unload(Window *window) {
     text_layer_destroy(s_time_layer);
     text_layer_destroy(s_german_text_layer);
     bitmap_layer_destroy(s_bg_layer);
-
-    appsync_deinit();
 }
 
 static void handle_init(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_init(void)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_init(void)");
 
     storage_init();
     bt_state_init(update_time);
     battery_state_init(update_time);
-    
+    appsync_init(appsync_value_changed_callback);
+
     // Create window and add window handlers.
     s_main_window = window_create();
     window_set_window_handlers(s_main_window, (WindowHandlers){
@@ -214,28 +217,30 @@ static void handle_init(void) {
     // Push window onto stack and update text.
     window_stack_push(s_main_window, true);
 
-    update_time_enabled = true;
+    ui_updates_enabled = true;
     update_time();
+
     // Subscribe to timer tick, do this only here to not call time update
     // function twice.
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 }
 
 static void handle_deinit(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_deinit(void)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_deinit(void)");
 
-    storage_deinit();
-    bt_state_deinit();
-    battery_state_deinit();
-    
     tick_timer_service_unsubscribe();
 
     // Destroy window.
     window_destroy(s_main_window);    
+
+    storage_deinit();
+    bt_state_deinit();
+    battery_state_deinit();
+    appsync_deinit();
 }
 
 int main(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "int main(void)");
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "int main(void)");
 
     handle_init();
     app_event_loop();
