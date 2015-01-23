@@ -5,3 +5,5 @@ test/stringbuffer_test
 test/*.out
 test/*.dSYM
 *.sw?
+.sass-cache/
+_site/
