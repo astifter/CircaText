@@ -15,7 +15,7 @@ static hardware_changed_callback battery_state_changed_callback;
 // - The handler updates the string from the received values and calls the registered callback.
 // - The deinitializer deregisters the callback.
 static void handle_bt_event(bool connected) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void handle_bt_event(bool connected)");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void handle_bt_event(bool connected)");
     bt_state = connected;
 
     stringbuffer_init(&bt_state_string);
@@ -30,19 +30,19 @@ static void handle_bt_event(bool connected) {
 }
 
 void bt_state_init(hardware_changed_callback c) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void bt_state_init(hardware_changed_callback c)");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void bt_state_init(hardware_changed_callback c)");
     bt_state_changed_callback = c;
     bt_state = bluetooth_connection_service_peek();
     handle_bt_event(bt_state);
     bluetooth_connection_service_subscribe(handle_bt_event);
 }
 void bt_state_deinit(void) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void bt_state_deinit(void)");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void bt_state_deinit(void)");
     bluetooth_connection_service_unsubscribe();
 }
 
 static void handle_battery_event(BatteryChargeState s) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void handle_battery_event(BatteryChargeState s)");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void handle_battery_event(BatteryChargeState s)");
     battery_state = s;
     
     stringbuffer_init(&battery_state_string);
@@ -62,14 +62,14 @@ static void handle_battery_event(BatteryChargeState s) {
 }
 
 void battery_state_init(hardware_changed_callback c) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_state_init(hardware_changed_callback c)");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_state_init(hardware_changed_callback c)");
     battery_state_changed_callback = c;
     battery_state = battery_state_service_peek();
     handle_battery_event(battery_state);
     battery_state_service_subscribe(handle_battery_event);
 }
 void battery_state_deinit(void) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_state_deinit(void)");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_state_deinit(void)");
     battery_state_service_unsubscribe();
 }
 

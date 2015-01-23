@@ -22,7 +22,7 @@ enum {
 // Reads back values from storage and sets "synced" values accordingly. Also
 // populates textual representation of the values.
 static void populate_values(void) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "populate_values(void)");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "populate_values(void)");
 
     stringbuffer_init(&sb);
     stringbuffer_append(&sb, "Einstellungen:\n");
@@ -38,7 +38,7 @@ static void populate_values(void) {
     }
     appsync_values.text = sb.retval;
  
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "populate_values(void): settings string:\n%s", appsync_values.text);
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "populate_values(void): settings string:\n%s", appsync_values.text);
 }
 
 // Called when the settings change, takes them and writes them into storage.
@@ -47,16 +47,16 @@ static void sync_tuple_changed_callback(const uint32_t key,
                                         const Tuple* new_tuple, 
                                         const Tuple* old_tuple, 
                                         void* context) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "key: %u", (unsigned int)key);
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "key: %u", (unsigned int)key);
     switch (key) {
         case SELECTED_VERISON: {
-            app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "SELECTED_VERISON: %s", new_tuple->value->cstring);
+            //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "SELECTED_VERISON: %s", new_tuple->value->cstring);
             strcpy(storage.selectedVersion, new_tuple->value->cstring);
             storage_persist();
             populate_values();
         } break;
     }
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync_tuple_changed_callback() exiting to callback");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync_tuple_changed_callback() exiting to callback");
     callback();
 }
 
@@ -82,13 +82,13 @@ static char *translate_error(AppMessageResult result) {
 }
 
 static void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %s", translate_error(app_message_error));
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %s", translate_error(app_message_error));
 }
 
 // Initializes app_sync by populating values, storing callback, registering
 // app_sync callbacks and opening messages.
 void appsync_init(appsync_callback c) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "appsync_init()");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "appsync_init()");
     populate_values();
     callback = c;
 
@@ -101,12 +101,12 @@ void appsync_init(appsync_callback c) {
                   initial_values, ARRAY_LENGTH(initial_values),
                   sync_tuple_changed_callback, sync_error_callback, NULL);
 
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "app_message_open()");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "app_message_open()");
     app_message_open(124, 124);
 }
 
 // Closes down app_sync.
 void appsync_deinit(void) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "appsync_deinit()");
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "appsync_deinit()");
     app_sync_deinit(&sync);
 }
