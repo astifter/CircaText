@@ -18,7 +18,8 @@ int main(int argc, char** argv) {
 
     // now append more that the string can hold
     for (int i = 0; i < 13; i++) {
-        stringbuffer_append(&sbval, "0123456789");
+        stringbuffer_append(&sbval, "01234567");
+        stringbuffer_append_int(&sbval, 89);
     }
     // print values from full string
     printvalues(&sbval);

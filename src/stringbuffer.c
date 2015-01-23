@@ -11,11 +11,20 @@ void stringbuffer_init(stringbuffer* sb) {
     sb->free = MAXLEN - 1;
 }
 
+static void stringbuffer_update_counters(stringbuffer* sb, unsigned int new) {
+    sb->current += new;
+    sb->free -= new;
+}
+
 // If buffer is still not full, write value to it and update current pointer
 // and free counter.
 void stringbuffer_append(stringbuffer* sb, char* value) {
     if (sb->free <= 0) return;
     unsigned int new = snprintf(sb->current, sb->free+1, "%s", value);
-    sb->current += new;
-    sb->free -= new;
+    stringbuffer_update_counters(sb, new);
+}
+void stringbuffer_append_int(stringbuffer* sb, int value) {
+    if (sb->free <= 0) return;
+    unsigned int new = snprintf(sb->current, sb->free+1, "%d", value);
+    stringbuffer_update_counters(sb, new);
 }
