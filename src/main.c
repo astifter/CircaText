@@ -2,6 +2,7 @@
 #include "stringbuffer.h"
 #include "storage.h"
 #include "appsync.h"
+#include "hw_handling.h"
 
 // Static pointers for window and layers.
 static Window      *s_main_window;
@@ -26,10 +27,6 @@ void appsync_value_changed_callback(void) {
 
   app_timer_register(4000, update_time_timer_callback, NULL);
 }
-
-// Storage are for phone states.
-static bool               bt_state;
-static BatteryChargeState battery_state;
 
 // Static display texts.
 static const char* days[] = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
@@ -83,22 +80,11 @@ static void update_time(void) {
     
     // Fetch and print BlueTooth status information.
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display bt info");
-    static char bt_info[80];
-    char *statestring;
-    if (bt_state) statestring = "conn"; else statestring = "disconn";
-    snprintf(bt_info, 79, "bt: %s", statestring);
-    text_layer_set_text(s_info1_layer, bt_info);
+    text_layer_set_text(s_info1_layer, get_bt_state());
 
     // Fetch and print battery status information.
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display battery info");
-    static char batt_info[80];
-    char* batterystatestring;
-    if (!battery_state.is_plugged) batterystatestring = "";
-    else if (battery_state.is_charging) batterystatestring = " (p, c)";
-    else batterystatestring = " (p)";
-    snprintf(batt_info, 79, "batt: %d%%%s", battery_state.charge_percent, 
-                                            batterystatestring);
-    text_layer_set_text(s_info2_layer, batt_info);
+    text_layer_set_text(s_info2_layer, get_battery_state());
 }
 
 // Handles timer ticks.
@@ -211,24 +197,12 @@ static void main_window_unload(Window *window) {
     appsync_deinit();
 }
 
-// Receive BT event and update window.
-void handle_bt_event(bool connected) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void handle_bt_event(bool connected)");
-    bt_state = connected;
-    update_time();
-}
-
-// Receive battery evend and update window.
-void handle_battery_event(BatteryChargeState s) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void handle_battery_event(BatteryChargeState s)");
-    battery_state = s;
-    update_time();
-}
-
 static void handle_init(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_init(void)");
 
     storage_init();
+    bt_state_init(update_time);
+    battery_state_init(update_time);
     
     // Create window and add window handlers.
     s_main_window = window_create();
@@ -239,11 +213,6 @@ static void handle_init(void) {
 
     // Push window onto stack and update text.
     window_stack_push(s_main_window, true);
-
-    bt_state = bluetooth_connection_service_peek();
-    bluetooth_connection_service_subscribe(handle_bt_event);
-    battery_state = battery_state_service_peek();
-    battery_state_service_subscribe(handle_battery_event);
 
     update_time_enabled = true;
     update_time();
@@ -256,10 +225,10 @@ static void handle_deinit(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_deinit(void)");
 
     storage_deinit();
+    bt_state_deinit();
+    battery_state_deinit();
     
     tick_timer_service_unsubscribe();
-    battery_state_service_unsubscribe();
-    bluetooth_connection_service_unsubscribe();
 
     // Destroy window.
     window_destroy(s_main_window);    
