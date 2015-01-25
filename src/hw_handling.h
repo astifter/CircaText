@@ -7,12 +7,12 @@
 // processed.
 typedef void (*hardware_changed_callback)(void);
 
-// Initializers and Deinitializers.
+// Functions for BlueTooth handling.
 void bt_state_init(hardware_changed_callback c);
 void bt_state_deinit(void);
+char* get_bt_state(void);
+
+// Functions for battery handling.
 void battery_state_init(hardware_changed_callback c);
 void battery_state_deinit(void);
-
-// Functions to fetch the current state of the HW as descriptive strings.
-char* get_bt_state(void);
 char* get_battery_state(void);
