@@ -199,14 +199,8 @@ static void main_window_unload(Window *window) {
     bitmap_layer_destroy(s_bg_layer);
 }
 
-static void handle_init(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_init(void)");
-
-    storage_init();
-    bt_state_init(update_time);
-    battery_state_init(update_time);
-    appsync_init(appsync_value_changed_callback);
-
+// Creates window and loads window handlers, pushes window onto display stack.
+static void main_window_create() {
     // Create window and add window handlers.
     s_main_window = window_create();
     window_set_window_handlers(s_main_window, (WindowHandlers){
@@ -219,9 +213,18 @@ static void handle_init(void) {
 
     ui_updates_enabled = true;
     update_time();
+}
 
-    // Subscribe to timer tick, do this only here to not call time update
-    // function twice.
+static void handle_init(void) {
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_init(void)");
+
+    storage_init();
+    bt_state_init(update_time);
+    battery_state_init(update_time);
+    appsync_init(appsync_value_changed_callback);
+
+    main_window_create();
+
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 }
 
@@ -230,13 +233,12 @@ static void handle_deinit(void) {
 
     tick_timer_service_unsubscribe();
 
-    // Destroy window.
     window_destroy(s_main_window);    
 
-    storage_deinit();
-    bt_state_deinit();
-    battery_state_deinit();
     appsync_deinit();
+    battery_state_deinit();
+    bt_state_deinit();
+    storage_deinit();
 }
 
 int main(void) {
