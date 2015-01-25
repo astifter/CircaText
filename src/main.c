@@ -6,14 +6,14 @@
 #include "main_window.h"
 
 static void appsync_value_changed_callback(void) {
-    const char* text = appsync_values.text;
-    flash_text(text);
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void appsync_value_changed_callback(void)");
+
+    flash_text(appsync_values.text);
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void tick_handler(struct tm *tick_time, TimeUnits units_changed)");
-    // Hand updating to separate method, this method is used at watchface
-    // loading as well.
+
     update_time();
 }
 
