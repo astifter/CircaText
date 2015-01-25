@@ -25,7 +25,7 @@ static void populate_values(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "populate_values(void)");
 
     stringbuffer_init(&sb);
-    stringbuffer_append(&sb, "Einstellungen:\n");
+    stringbuffer_append(&sb, "Einstellungen\n");
 
     stringbuffer_append(&sb, "Text: ");
     if (strcmp(storage.selectedVersion, "Regular") == 0) {
