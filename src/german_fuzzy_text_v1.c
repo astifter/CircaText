@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "german_fuzzy_text_common.h"
 
 // Include the stringbuffer handling.
 #include "stringbuffer.h"
@@ -44,20 +45,7 @@ char* german_fuzzy_text(int hour, int minute) {
     // This format is inherently 12 hour based, make sure hour is corrected and
     // printed accordingly.
     if (hour >= 12) hour -= 12;
-    switch (hour+1) {
-        case 1:  stringbuffer_append(&sbval, "eins"); break;
-        case 2:  stringbuffer_append(&sbval, "zwei"); break;
-        case 3:  stringbuffer_append(&sbval, "drei"); break;
-        case 4:  stringbuffer_append(&sbval, "vier"); break;
-        case 5:  stringbuffer_append(&sbval, "fünf"); break;
-        case 6:  stringbuffer_append(&sbval, "sechs"); break;
-        case 7:  stringbuffer_append(&sbval, "sieben"); break;
-        case 8:  stringbuffer_append(&sbval, "acht"); break;
-        case 9:  stringbuffer_append(&sbval, "neun"); break;
-        case 10: stringbuffer_append(&sbval, "zehn"); break;
-        case 11: stringbuffer_append(&sbval, "elf"); break;
-        case 12: stringbuffer_append(&sbval, "zwölf"); break;
-    }
+    stringbuffer_append(&sbval, german_numbers[hour+1]);
 
     return sbval.retval;
 }

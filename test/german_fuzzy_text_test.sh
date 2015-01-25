@@ -10,7 +10,7 @@ compareandshow() {
 }
 
 # compile testing software
-gcc -g -o german_fuzzy_text_test german_fuzzy_text_test.c ../src/german_fuzzy_text_v*.c ../src/stringbuffer.c -I ../src
+gcc -g -o german_fuzzy_text_test german_fuzzy_text_test.c ../src/german_fuzzy_text_v*.c ../src/stringbuffer.c ../src/german_fuzzy_text_common.c -I ../src
 gcc -g -o stringbuffer_test stringbuffer_test.c ../src/stringbuffer.c -I ../src
 
 # for both time to text methods do a run of the program, capture output and

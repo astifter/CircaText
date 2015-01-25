@@ -18,7 +18,7 @@ static void stringbuffer_update_counters(stringbuffer* sb, unsigned int new) {
 
 // If buffer is still not full, write value to it and update current pointer
 // and free counter.
-void stringbuffer_append(stringbuffer* sb, char* value) {
+void stringbuffer_append(stringbuffer* sb, const char* value) {
     if (sb->free <= 0) return;
     unsigned int new = snprintf(sb->current, sb->free+1, "%s", value);
     stringbuffer_update_counters(sb, new);
