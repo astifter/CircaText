@@ -121,11 +121,11 @@ static void main_window_load(Window *window) {
     GRect timerect, daterect, inforect;
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_28);
-        timerect = GRect(0, screensize.size.h-h-storage.bottomspace, screensize.size.w, h+storage.bottomspace);
+        timerect = GRect(0, screensize.size.h-h-3, screensize.size.w, h+3);
     }
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_24);
-        daterect = GRect(0, screensize.size.h-h-storage.bottomspace, screensize.size.w, h+storage.bottomspace);
+        daterect = GRect(0, screensize.size.h-h-3, screensize.size.w, h+3);
     }
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_14);

@@ -8,29 +8,28 @@ enum {
 };
 storage_t storage;
 
+static void storage_log(void) {
+    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.selectedVersion: %s", storage.selectedVersion);
+}
+
 // Makes sure storage is populated (by checking and, on absence, writing
 // defaults) and then reading values.
 void storage_init(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init()");
-    if (!persist_exists(BOTTOMSPACE_KEY)) {
-        persist_write_int(BOTTOMSPACE_KEY, 3);
-    }
-    storage.bottomspace = persist_read_int(BOTTOMSPACE_KEY);
     if (!persist_exists(SELECTED_VERISON)) {
         persist_write_string(SELECTED_VERISON, "Regular");
     }
     persist_read_string(SELECTED_VERISON, storage.selectedVersion, 64);
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.selectedVersion: %s", storage.selectedVersion);
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.bottomspace: %d", storage.bottomspace);
+
+    storage_log();
 }
     
 // Write back values.
 void storage_persist(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_persist()");
-    persist_write_int(BOTTOMSPACE_KEY, storage.bottomspace);
     persist_write_string(SELECTED_VERISON, storage.selectedVersion);
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.selectedVersion: %s", storage.selectedVersion);
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.bottomspace: %d", storage.bottomspace);
+
+    storage_log();
 }
 
 // Deinitalization, currently just writes back values but might do more in the

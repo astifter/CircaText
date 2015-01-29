@@ -5,7 +5,6 @@
 // The stored data.
 typedef struct {
     char selectedVersion[64];
-    int bottomspace;
 } storage_t;
 extern storage_t storage;
 
