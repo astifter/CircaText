@@ -61,7 +61,7 @@ static void sync_tuple_changed_callback(const uint32_t key,
 }
 
 static void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %d", app_message_error);
+    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %d", app_message_error);
 }
 
 // Initializes app_sync by populating values, storing callback, registering

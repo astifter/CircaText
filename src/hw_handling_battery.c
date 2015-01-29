@@ -8,6 +8,8 @@ static BatteryChargeState battery_state;
 static stringbuffer       battery_state_string;
 static hardware_changed_callback battery_state_changed_callback;
 
+// THIS MUST NOT BE ENABLED static BatteryChargeState test_battery_state = { 100, 0, 0 };
+
 // The hardware handlers operate after the same principle:
 // - The initializer reads the state directly, uses the handler to update the string description and registers the hw-callback handler.
 // - The handler updates the string from the received values and calls the registered callback.
@@ -34,6 +36,13 @@ static void handle_battery_event(BatteryChargeState s) {
     battery_state_changed_callback();
 }
 
+// THIS MUST NOT BE ENABLED static void test_timer(void* data) {
+// THIS MUST NOT BE ENABLED     test_battery_state.charge_percent -= 10;
+// THIS MUST NOT BE ENABLED     handle_battery_event(test_battery_state);
+// THIS MUST NOT BE ENABLED 
+// THIS MUST NOT BE ENABLED     app_timer_register(15000, test_timer, NULL);
+// THIS MUST NOT BE ENABLED }
+
 void battery_state_init(hardware_changed_callback c) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_state_init(hardware_changed_callback c)");
 
@@ -43,6 +52,10 @@ void battery_state_init(hardware_changed_callback c) {
     battery_state = battery_state_service_peek();
     handle_battery_event(battery_state);
     battery_state_service_subscribe(handle_battery_event);
+
+    battery_estimate_unlock();
+
+    // THIS MUST NOT BE ENABLED app_timer_register(15000, test_timer, NULL);
 }
 
 void battery_state_deinit(void) {
