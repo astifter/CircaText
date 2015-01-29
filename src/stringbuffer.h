@@ -15,4 +15,7 @@ typedef struct {
 void stringbuffer_init(stringbuffer* sb);
 // Appends string value to stringbuffer.
 void stringbuffer_append(stringbuffer* sb, const char* value);
+void stringbuffer_append_str(stringbuffer* sb, const char* value);
 void stringbuffer_append_int(stringbuffer* sb, int value);
+void stringbuffer_append_fi(stringbuffer* sb, const char* fmt, const int value);
+void stringbuffer_append_fs(stringbuffer* sb, const char* fmt, const char* value);

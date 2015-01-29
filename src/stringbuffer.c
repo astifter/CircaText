@@ -19,12 +19,22 @@ static void stringbuffer_update_counters(stringbuffer* sb, unsigned int new) {
 // If buffer is still not full, write value to it and update current pointer
 // and free counter.
 void stringbuffer_append(stringbuffer* sb, const char* value) {
+    stringbuffer_append_str(sb, value);
+}
+void stringbuffer_append_str(stringbuffer* sb, const char* value) {
+    stringbuffer_append_fs(sb, "%s", value);
+}
+void stringbuffer_append_fs(stringbuffer* sb, const char* fmt, const char* value) {
     if (sb->free <= 0) return;
-    unsigned int new = snprintf(sb->current, sb->free+1, "%s", value);
+    unsigned int new = snprintf(sb->current, sb->free+1, fmt, value);
     stringbuffer_update_counters(sb, new);
 }
+
 void stringbuffer_append_int(stringbuffer* sb, int value) {
+    stringbuffer_append_fi(sb, "%d", value);
+}
+void stringbuffer_append_fi(stringbuffer* sb, const char* fmt, const int value) {
     if (sb->free <= 0) return;
-    unsigned int new = snprintf(sb->current, sb->free+1, "%d", value);
+    unsigned int new = snprintf(sb->current, sb->free+1, fmt, value);
     stringbuffer_update_counters(sb, new);
 }
