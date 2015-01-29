@@ -16,7 +16,7 @@ appsync_values_t appsync_values;
 appsync_callback callback;
 
 enum {
-    SELECTED_VERISON = 0x0,
+    SELECTED_VERSION = 0x0,
 };
 
 // Reads back values from storage and sets "synced" values accordingly. Also
@@ -49,8 +49,8 @@ static void sync_tuple_changed_callback(const uint32_t key,
                                         void* context) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "key: %u", (unsigned int)key);
     switch (key) {
-        case SELECTED_VERISON: {
-            //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "SELECTED_VERISON: %s", new_tuple->value->cstring);
+        case SELECTED_VERSION: {
+            //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "SELECTED_VERSION: %s", new_tuple->value->cstring);
             strcpy(storage.selectedVersion, new_tuple->value->cstring);
             storage_persist();
             populate_values();
@@ -72,7 +72,7 @@ void appsync_init(appsync_callback c) {
     callback = c;
 
     Tuplet initial_values[] = {
-       TupletCString(SELECTED_VERISON, (const char*)(storage.selectedVersion))
+       TupletCString(SELECTED_VERSION, (const char*)(storage.selectedVersion))
     };
   
     app_sync_init(&sync, 

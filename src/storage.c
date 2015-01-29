@@ -4,7 +4,7 @@
 
 // Indices to storage and data to access copies of stored values.
 enum {
-  SELECTED_VERISON = 0x0,
+  SELECTED_VERSION = 0x0,
   BATTERY_ESTIMATE = 0x10001,
 };
 storage_t storage;
@@ -16,7 +16,7 @@ static void storage_log(void) {
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state.is_charging: %d", storage.battery_estimate.previous_state.is_charging);
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state.is_plugged: %d", storage.battery_estimate.previous_state.is_plugged);
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.average_data_write_head: %d", storage.battery_estimate.average_data_write_head);
-    for (int i = 0; i < average_data_num; i++) {
+    for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
     app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.averate_data[%d]: %ld", i, storage.battery_estimate.averate_data[i]);
     }
 }
@@ -25,10 +25,10 @@ static void storage_log(void) {
 // defaults) and then reading values.
 void storage_init(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init()");
-    if (!persist_exists(SELECTED_VERISON)) {
-        persist_write_string(SELECTED_VERISON, "Regular");
+    if (!persist_exists(SELECTED_VERSION)) {
+        persist_write_string(SELECTED_VERSION, "Regular");
     }
-    persist_read_string(SELECTED_VERISON, storage.selectedVersion, 64);
+    persist_read_string(SELECTED_VERSION, storage.selectedVersion, 64);
     if (!persist_exists(BATTERY_ESTIMATE)) {
         persist_write_data(BATTERY_ESTIMATE, (void*)&battery_estimate_data_init, sizeof(battery_estimate_data));
     }
@@ -40,7 +40,7 @@ void storage_init(void) {
 // Write back values.
 void storage_persist(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_persist()");
-    persist_write_string(SELECTED_VERISON, storage.selectedVersion);
+    persist_write_string(SELECTED_VERSION, storage.selectedVersion);
     persist_write_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
 
     storage_log();
