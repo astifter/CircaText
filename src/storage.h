@@ -1,10 +1,12 @@
 #pragma once
 
 #include <pebble.h>
+#include "battery_estimate_data.h"
 
 // The stored data.
 typedef struct {
     char selectedVersion[64];
+    battery_estimate_data battery_estimate;
 } storage_t;
 extern storage_t storage;
 
