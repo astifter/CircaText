@@ -38,12 +38,12 @@ void storage_init(void) {
 
     if (!persist_exists(SELECTED_VERSION)) {
         persist_write_string(SELECTED_VERSION, "Regular");
-        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init(): init %d with data %s", SELECTED_VERSION, "Regular");
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init(): init %d with data %s", SELECTED_VERSION, "Regular");
     }
     persist_read_string(SELECTED_VERSION, storage.selectedVersion, 64);
     if (!persist_exists(BATTERY_ESTIMATE)) {
         persist_write_data(BATTERY_ESTIMATE, (void*)&battery_estimate_data_init, sizeof(battery_estimate_data));
-        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init(): init %d", BATTERY_ESTIMATE);
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init(): init %d", BATTERY_ESTIMATE);
     }
     persist_read_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
 

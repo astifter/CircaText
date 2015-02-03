@@ -69,7 +69,7 @@ void battery_estimate_update(BatteryChargeState current) {
                 time_t difference = current_timestamp - storage.battery_estimate.previous_state_timestamp;
                 storage.battery_estimate.averate_data[storage.battery_estimate.average_data_write_head] = difference;
                 
-                app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "battery_estimate.averate_data[%d] = %ld", storage.battery_estimate.average_data_write_head, storage.battery_estimate.averate_data[storage.battery_estimate.average_data_write_head]);
+                //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "battery_estimate.averate_data[%d] = %ld", storage.battery_estimate.average_data_write_head, storage.battery_estimate.averate_data[storage.battery_estimate.average_data_write_head]);
             }
         }
     }
@@ -77,7 +77,7 @@ void battery_estimate_update(BatteryChargeState current) {
     if (battery_estimate_isunlocked) {
         memcpy(&(storage.battery_estimate.previous_state), &current, sizeof(BatteryChargeState));
         storage.battery_estimate.previous_state_timestamp = time(NULL);
-        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "battery_estimate_isunlocked, writing dataset");
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "battery_estimate_isunlocked, writing dataset");
         storage_persist();
     }
 
