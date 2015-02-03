@@ -10,17 +10,17 @@ enum {
 };
 storage_t storage;
 
-static void app_log_storage_log(void* data) {
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.selectedVersion: %s", storage.selectedVersion);
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state_timestamp: %ld", storage.battery_estimate.previous_state_timestamp);
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state.charge_percent: %d", storage.battery_estimate.previous_state.charge_percent);
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state.is_charging: %d", storage.battery_estimate.previous_state.is_charging);
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state.is_plugged: %d", storage.battery_estimate.previous_state.is_plugged);
-    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.average_data_write_head: %d", storage.battery_estimate.average_data_write_head);
-    for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
-        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.averate_data[%d]: %ld", i, storage.battery_estimate.averate_data[i]);
-    }
-}
+//static void app_log_storage_log(void* data) {
+//    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.selectedVersion: %s", storage.selectedVersion);
+//    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state_timestamp: %ld", storage.battery_estimate.previous_state_timestamp);
+//    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state.charge_percent: %d", storage.battery_estimate.previous_state.charge_percent);
+//    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state.is_charging: %d", storage.battery_estimate.previous_state.is_charging);
+//    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.previous_state.is_plugged: %d", storage.battery_estimate.previous_state.is_plugged);
+//    app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.average_data_write_head: %d", storage.battery_estimate.average_data_write_head);
+//    for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
+//        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage.battery_estimate.averate_data[%d]: %ld", i, storage.battery_estimate.averate_data[i]);
+//    }
+//}
 
 // Makes sure storage is populated (by checking and, on absence, writing
 // defaults) and then reading values.
