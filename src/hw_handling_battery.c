@@ -5,8 +5,10 @@
 
 // States and string descriptions of that states and the respective callbacks.
 static BatteryChargeState battery_state;
-static stringbuffer       battery_state_string;
+static stringbuffer       battery_state_sb;
 static hardware_changed_callback battery_state_changed_callback;
+char* battery_state_string;
+int   battery_state_string_dirty;
 
 // THIS MUST NOT BE ENABLED static BatteryChargeState test_battery_state = { 100, 0, 0 };
 
@@ -20,19 +22,21 @@ static void handle_battery_event(BatteryChargeState s) {
     battery_state = s;
     battery_estimate_update(s);
     
-    stringbuffer_init(&battery_state_string);
-    stringbuffer_append_fi(&battery_state_string, "%d%%", battery_state.charge_percent);    
+    stringbuffer_init(&battery_state_sb);
+    stringbuffer_append_fi(&battery_state_sb, "%d%%", battery_state.charge_percent);    
 
     if (battery_state.is_plugged) {
         if (battery_state.is_charging) {
-            stringbuffer_append(&battery_state_string, " (p, c)");
+            stringbuffer_append(&battery_state_sb, " (p, c)");
         } else {
-            stringbuffer_append(&battery_state_string, " (p)");
+            stringbuffer_append(&battery_state_sb, " (p)");
         }
     } else {
-        stringbuffer_append_fs(&battery_state_string, " (%s)", battery_estimate_string());
+        stringbuffer_append_fs(&battery_state_sb, " (%s)", battery_estimate_string());
     }
 
+    battery_state_string = battery_state_sb.retval;
+    battery_state_string_dirty = 1;
     battery_state_changed_callback();
 }
 
@@ -63,9 +67,3 @@ void battery_state_deinit(void) {
 
     battery_state_service_unsubscribe();
 }
-
-// The functions to return the state description respectively.
-char* get_battery_state(void) {
-    return battery_state_string.retval;
-}
-

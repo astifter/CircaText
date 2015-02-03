@@ -84,12 +84,18 @@ void update_time(void) {
     text_layer_set_text(s_date_layer, date);
     
     // Fetch and print BlueTooth status information.
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display bt info");
-    text_layer_set_text(s_info1_layer, get_bt_state());
+    if (bt_state_string_dirty) {
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display bt info");
+        text_layer_set_text(s_info1_layer, bt_state_string);
+        bt_state_string_dirty = 0;
+    }
 
     // Fetch and print battery status information.
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display battery info");
-    text_layer_set_text(s_info2_layer, get_battery_state());
+    if (battery_state_string_dirty) {
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display battery info");
+        text_layer_set_text(s_info2_layer, battery_state_string);
+        battery_state_string_dirty = 0;
+    }
 }
 
 // Updates the background bitmap layer.
