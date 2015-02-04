@@ -5,6 +5,7 @@
 #include "hw_handling.h"
 #include "main_window.h"
 #include "text_handling.h"
+#include "german_fuzzy_text_common.h"
 
 static Window      *s_main_window;
 static TextLayer   *s_german_text_layer;
@@ -52,7 +53,10 @@ void update_time(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): fetch german text");
     // Use german_fuzzy_text to render German text time and display in layer.
     char* buffer = appsync_values.time_to_text_pointer(tick_time->tm_hour, tick_time->tm_min);
-    text_layer_set_text(s_german_text_layer, buffer);
+    if (german_fuzzy_text_dirty) {
+        text_layer_set_text(s_german_text_layer, buffer);
+        german_fuzzy_text_dirty = 0;
+    }
 
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display plain time");
     // Use a static (long lived) buffer for the numeric time.
