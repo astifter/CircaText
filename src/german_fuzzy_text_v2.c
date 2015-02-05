@@ -7,7 +7,7 @@
 static stringbuffer sbval;
 
 // Takes hours and minutes and converts them to a German time text.
-// This is the version that provides a shorter version of the time, with 
+// This is the version that provides a shorter version of the time, with
 // "fünf vor" and "fünf nach" of "viertel" and "dreiviertel" replaced.
 char* german_fuzzy_text_v2(int hour, int minute) {
     LOG_FUNC();

@@ -22,9 +22,9 @@ static void handle_battery_event(BatteryChargeState s) {
 
     battery_state = s;
     battery_estimate_update(s);
-    
+
     stringbuffer_init(&battery_state_sb);
-    stringbuffer_append_fi(&battery_state_sb, "%d%%", battery_state.charge_percent);    
+    stringbuffer_append_fi(&battery_state_sb, "%d%%", battery_state.charge_percent);
 
     if (battery_state.is_plugged) {
         if (battery_state.is_charging) {
@@ -45,7 +45,7 @@ static void handle_battery_event(BatteryChargeState s) {
 // THIS MUST NOT BE ENABLED     LOG(LOG_ALL, "WARNING: THIS SHOULD NOT APPEAR!")
 // THIS MUST NOT BE ENABLED     test_battery_state.charge_percent -= 10;
 // THIS MUST NOT BE ENABLED     handle_battery_event(test_battery_state);
-// THIS MUST NOT BE ENABLED 
+// THIS MUST NOT BE ENABLED
 // THIS MUST NOT BE ENABLED     app_timer_register(15000, test_timer, NULL);
 // THIS MUST NOT BE ENABLED }
 

@@ -21,7 +21,7 @@ int16_t get_text_size(char *fk) {
     LOG_FUNC();
 
     return graphics_text_layout_get_content_size("00:00", fonts_get_system_font(fk),
-                                                 GRect(0,0,100,100), 
+                                                 GRect(0,0,100,100),
                                                  GTextOverflowModeTrailingEllipsis,
                                                  GTextAlignmentLeft).h;
 }

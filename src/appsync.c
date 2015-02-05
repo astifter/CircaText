@@ -44,13 +44,13 @@ static void populate_values(void) {
 
 // Called when the settings change, takes them and writes them into storage.
 // Then calls populate_values() and calls callback function.
-static void sync_tuple_changed_callback(const uint32_t key, 
-                                        const Tuple* new_tuple, 
-                                        const Tuple* old_tuple, 
+static void sync_tuple_changed_callback(const uint32_t key,
+                                        const Tuple* new_tuple,
+                                        const Tuple* old_tuple,
                                         void* context) {
     LOG_FUNC();
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "key: %u", (unsigned int)key);
-    
+
     switch (key) {
         case SELECTED_VERSION: {
             //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "SELECTED_VERSION: %s", new_tuple->value->cstring);
@@ -79,9 +79,9 @@ void appsync_init(appsync_callback c) {
     Tuplet initial_values[] = {
        TupletCString(SELECTED_VERSION, (const char*)(storage.selectedVersion))
     };
-  
-    app_sync_init(&sync, 
-                  sync_buffer, sizeof(sync_buffer), 
+
+    app_sync_init(&sync,
+                  sync_buffer, sizeof(sync_buffer),
                   initial_values, ARRAY_LENGTH(initial_values),
                   sync_tuple_changed_callback, sync_error_callback, NULL);
 

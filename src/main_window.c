@@ -38,7 +38,7 @@ void flash_text(const char* text) {
 
     light_enable_interaction();
     text_layer_set_text(s_german_text_layer, text);
-  
+
     app_timer_register(4000, update_time_timer_callback, NULL);
 }
 
@@ -76,7 +76,7 @@ void update_time(void) {
     }
     // Display time in respective layer.
     text_layer_set_text(s_time_layer, time);
-    
+
     int weekday = tick_time->tm_wday-1;
     if (weekday < 0) weekday += 7;
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display date");
@@ -85,15 +85,15 @@ void update_time(void) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): month: %d", tick_time->tm_mon);
     // Use a static (long lived) buffer for the numeric date.
     static char date[80];
-    snprintf(date, 80, "%s, %d. %s", 
-             days[weekday], 
-             tick_time->tm_mday, 
+    snprintf(date, 80, "%s, %d. %s",
+             days[weekday],
+             tick_time->tm_mday,
              months[tick_time->tm_mon]
             );
     // Display date in respective layer.
     LOG(LOG_FACEUPDATE, "updating s_date_layer");
     text_layer_set_text(s_date_layer, date);
-    
+
     // Fetch and print BlueTooth status information.
     if (bt_state_string_dirty) {
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display bt info");
@@ -119,17 +119,17 @@ static void update_bg_layer(struct Layer *layer, GContext *ctx) {
     graphics_context_set_fill_color(ctx, GColorBlack);
     graphics_context_set_stroke_color(ctx, GColorBlack);
     graphics_fill_rect(ctx, layer_get_frame(layer), 0, 0);
-    
+
     // Switch to white, fetch frame size.
     graphics_context_set_stroke_color(ctx, GColorWhite);
     GRect inforect = layer_get_frame(text_layer_get_layer(s_info1_layer));
 
     // Draw top and bottom line, use calculated data.
     uint16_t topline = inforect.origin.y + 3;
-    graphics_draw_line(ctx, GPoint(inforect.origin.x, topline), 
+    graphics_draw_line(ctx, GPoint(inforect.origin.x, topline),
                             GPoint(inforect.size.w,   topline));
     uint16_t bottomline = inforect.origin.y + inforect.size.h + 1;
-    graphics_draw_line(ctx, GPoint(inforect.origin.x, bottomline), 
+    graphics_draw_line(ctx, GPoint(inforect.origin.x, bottomline),
                             GPoint(inforect.size.w,   bottomline));
 }
 
@@ -151,7 +151,7 @@ static void main_window_load(Window *window) {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_14);
         inforect = GRect(0, daterect.origin.y-h, screensize.size.w, h);
     }
-    
+
     // Create blank, black background layer.
     s_bg_layer = bitmap_layer_create(screensize);
     layer_set_update_proc(bitmap_layer_get_layer(s_bg_layer), update_bg_layer);
@@ -163,10 +163,10 @@ static void main_window_load(Window *window) {
     // Create time text layer and add it to window.
     s_time_layer = create_text_layer(window, timerect, FONT_KEY_GOTHIC_28);
     text_layer_set_text_alignment(s_time_layer, GTextAlignmentRight);
-    
+
     // Create date text layer and add it to window.
     s_date_layer = create_text_layer(window, daterect, FONT_KEY_GOTHIC_24);
-    
+
     // Create information layer and add it to the window.
     s_info1_layer = create_text_layer(window, inforect, FONT_KEY_GOTHIC_14);
     text_layer_set_overflow_mode(s_info1_layer, GTextOverflowModeTrailingEllipsis);
