@@ -6,6 +6,7 @@
 #include "main_window.h"
 #include "text_handling.h"
 #include "german_fuzzy_text_common.h"
+#include "logging_helper.h"
 
 static Window      *s_main_window;
 static TextLayer   *s_german_text_layer;
@@ -21,13 +22,15 @@ static const char* days[] = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
 static const char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
 
 static void update_time_timer_callback(void* data) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "update_time()");
+    LOG_FUNC();
+
     german_fuzzy_text_last_section = -1;
     update_time();
 }
 
 void flash_text(const char* text) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void appsync_value_changed_callback(void)");
+    LOG_FUNC();
+
     if (!ui_updates_enabled) {
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): not done, not enabled");
         return;
@@ -41,7 +44,8 @@ void flash_text(const char* text) {
 
 // Updates the layers and writes all sorts of text.
 void update_time(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time()");
+    LOG_FUNC();
+
     if (!ui_updates_enabled) {
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): not done, not enabled");
         return;
@@ -55,6 +59,7 @@ void update_time(void) {
     // Use german_fuzzy_text to render German text time and display in layer.
     char* buffer = appsync_values.time_to_text_pointer(tick_time->tm_hour, tick_time->tm_min);
     if (german_fuzzy_text_dirty) {
+        LOG(LOG_FACEUPDATE, "updating s_german_text_layer");
         text_layer_set_text(s_german_text_layer, buffer);
         german_fuzzy_text_dirty = 0;
     }
@@ -86,11 +91,13 @@ void update_time(void) {
              months[tick_time->tm_mon]
             );
     // Display date in respective layer.
+    LOG(LOG_FACEUPDATE, "updating s_date_layer");
     text_layer_set_text(s_date_layer, date);
     
     // Fetch and print BlueTooth status information.
     if (bt_state_string_dirty) {
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display bt info");
+        LOG(LOG_FACEUPDATE, "updating s_info1_layer");
         text_layer_set_text(s_info1_layer, bt_state_string);
         bt_state_string_dirty = 0;
     }
@@ -98,6 +105,7 @@ void update_time(void) {
     // Fetch and print battery status information.
     if (battery_state_string_dirty) {
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display battery info");
+        LOG(LOG_FACEUPDATE, "updating s_info2_layer");
         text_layer_set_text(s_info2_layer, battery_state_string);
         battery_state_string_dirty = 0;
     }
@@ -105,7 +113,8 @@ void update_time(void) {
 
 // Updates the background bitmap layer.
 static void update_bg_layer(struct Layer *layer, GContext *ctx) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_bg_layer(struct Layer *layer, GContext *ctx)");
+    LOG_FUNC();
+
     // First fill background with black rectangle.
     graphics_context_set_fill_color(ctx, GColorBlack);
     graphics_context_set_stroke_color(ctx, GColorBlack);
@@ -126,7 +135,7 @@ static void update_bg_layer(struct Layer *layer, GContext *ctx) {
 
 // Loads and sets up main window.
 static void main_window_load(Window *window) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void main_window_load(Window *window)");
+    LOG_FUNC();
 
     GRect screensize = layer_get_bounds(window_get_root_layer(window));
     GRect timerect, daterect, inforect;
@@ -168,7 +177,7 @@ static void main_window_load(Window *window) {
 
 // Destroy allocated data.
 static void main_window_unload(Window *window) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void main_window_unload(Window *window)");
+    LOG_FUNC();
 
     // Destroy text layers in reverse order.
     text_layer_destroy(s_info2_layer);
@@ -181,6 +190,8 @@ static void main_window_unload(Window *window) {
 
 // Creates window and loads window handlers, pushes window onto display stack.
 void main_window_create(void) {
+    LOG_FUNC();
+
     german_fuzzy_text_last_section = -1;
 
     // Create window and add window handlers.
@@ -198,5 +209,7 @@ void main_window_create(void) {
 }
 
 void main_window_destroy(void) {
+    LOG_FUNC();
+
     window_destroy(s_main_window);
 }

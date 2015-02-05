@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "storage.h"
 #include "stringbuffer.h"
+#include "logging_helper.h"
 
 // Indices to storage and data to access copies of stored values.
 enum {
@@ -25,7 +26,8 @@ storage_t storage;
 // Makes sure storage is populated (by checking and, on absence, writing
 // defaults) and then reading values.
 void storage_init(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init()");
+    LOG_FUNC();
+
     // THIS MUST NEVER BE ENABLED */for (unsigned int i = 0; i <= MAXIMUM_EVER_USED; i++) {
     // THIS MUST NEVER BE ENABLED */    if ((i % 10000) == 0) {
     // THIS MUST NEVER BE ENABLED */        app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init(): working key %d", i);
@@ -52,7 +54,7 @@ void storage_init(void) {
     
 // Write back values.
 void storage_persist(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_persist()");
+    LOG_FUNC();
 
     persist_write_string(SELECTED_VERSION, storage.selectedVersion);
     persist_write_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
@@ -63,7 +65,7 @@ void storage_persist(void) {
 // Deinitalization, currently just writes back values but might do more in the
 // future.
 void storage_deinit(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_deinit()");
+    LOG_FUNC();
 
     storage_persist();
 }

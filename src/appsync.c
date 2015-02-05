@@ -4,6 +4,7 @@
 #include "stringbuffer.h"
 #include "storage.h"
 #include "appsync.h"
+#include "logging_helper.h"
 
 // Static variables for holding the synced state and the textual representation
 // of the settings.
@@ -22,7 +23,7 @@ enum {
 // Reads back values from storage and sets "synced" values accordingly. Also
 // populates textual representation of the values.
 static void populate_values(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "populate_values(void)");
+    LOG_FUNC();
 
     stringbuffer_init(&sb);
     stringbuffer_append(&sb, "Einstellungen\n");
@@ -47,7 +48,9 @@ static void sync_tuple_changed_callback(const uint32_t key,
                                         const Tuple* new_tuple, 
                                         const Tuple* old_tuple, 
                                         void* context) {
+    LOG_FUNC();
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "key: %u", (unsigned int)key);
+    
     switch (key) {
         case SELECTED_VERSION: {
             //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "SELECTED_VERSION: %s", new_tuple->value->cstring);
@@ -61,13 +64,15 @@ static void sync_tuple_changed_callback(const uint32_t key,
 }
 
 static void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
+    LOG_FUNC();
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %d", app_message_error);
 }
 
 // Initializes app_sync by populating values, storing callback, registering
 // app_sync callbacks and opening messages.
 void appsync_init(appsync_callback c) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "appsync_init()");
+    LOG_FUNC();
+
     populate_values();
     callback = c;
 
@@ -86,6 +91,7 @@ void appsync_init(appsync_callback c) {
 
 // Closes down app_sync.
 void appsync_deinit(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "appsync_deinit()");
+    LOG_FUNC();
+
     app_sync_deinit(&sync);
 }

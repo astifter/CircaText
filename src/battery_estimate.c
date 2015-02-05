@@ -8,7 +8,7 @@ static stringbuffer battery_estimate_sb;
 static int          battery_estimate_isunlocked = 0;
 
 void battery_estimate_init(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_estimate_init(void)");
+    LOG_FUNC();
 
     stringbuffer_init(&battery_estimate_sb);
 }
@@ -18,7 +18,7 @@ void battery_estimate_unlock(void) {
 }
 
 static void battery_estimate_update_string(BatteryChargeState current) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void battery_estimate_update_string(void)");
+    LOG_FUNC();
 
     unsigned int sum = 0;
     for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
@@ -48,7 +48,7 @@ static void battery_estimate_update_string(BatteryChargeState current) {
 }
 
 void battery_estimate_update(BatteryChargeState current) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_estimate_update(BatteryChargeState current)");
+    LOG_FUNC();
 
     // if
     // - both current and former state are decharing
@@ -85,6 +85,8 @@ void battery_estimate_update(BatteryChargeState current) {
 }
 
 char* battery_estimate_string(void) {
+    LOG_FUNC();
+
     return battery_estimate_sb.retval;
 }
 

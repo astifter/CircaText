@@ -2,6 +2,7 @@
 #include "stringbuffer.h"
 #include "hw_handling.h"
 #include "battery_estimate.h"
+#include "logging_helper.h"
 
 // States and string descriptions of that states and the respective callbacks.
 static BatteryChargeState battery_state;
@@ -17,7 +18,7 @@ int   battery_state_string_dirty;
 // - The handler updates the string from the received values and calls the registered callback.
 // - The deinitializer deregisters the callback.
 static void handle_battery_event(BatteryChargeState s) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void handle_battery_event(BatteryChargeState s)");
+    LOG_FUNC();
 
     battery_state = s;
     battery_estimate_update(s);
@@ -41,6 +42,7 @@ static void handle_battery_event(BatteryChargeState s) {
 }
 
 // THIS MUST NOT BE ENABLED static void test_timer(void* data) {
+// THIS MUST NOT BE ENABLED     LOG(LOG_ALL, "WARNING: THIS SHOULD NOT APPEAR!")
 // THIS MUST NOT BE ENABLED     test_battery_state.charge_percent -= 10;
 // THIS MUST NOT BE ENABLED     handle_battery_event(test_battery_state);
 // THIS MUST NOT BE ENABLED 
@@ -48,7 +50,7 @@ static void handle_battery_event(BatteryChargeState s) {
 // THIS MUST NOT BE ENABLED }
 
 void battery_state_init(hardware_changed_callback c) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_state_init(hardware_changed_callback c)");
+    LOG_FUNC();
 
     battery_estimate_init();
 
@@ -63,7 +65,7 @@ void battery_state_init(hardware_changed_callback c) {
 }
 
 void battery_state_deinit(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void battery_state_deinit(void)");
+    LOG_FUNC();
 
     battery_state_service_unsubscribe();
 }

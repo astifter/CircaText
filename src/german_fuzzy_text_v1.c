@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "german_fuzzy_text_common.h"
+#include "logging_helper.h"
 
 // Include the stringbuffer handling.
 #include "stringbuffer.h"
@@ -9,6 +10,8 @@ static stringbuffer sbval;
 // This is the version that provides a more precise (albeit more verbose)
 // version of the time.
 char* german_fuzzy_text(int hour, int minute) {
+    LOG_FUNC();
+
     // To make things easier the first eight minutes of the new hour are
     // handled together with the previous hour. For this the minutes are
     // shifted back by 8 correcting the hour accordingly.

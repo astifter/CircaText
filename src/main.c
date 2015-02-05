@@ -4,21 +4,22 @@
 #include "appsync.h"
 #include "hw_handling.h"
 #include "main_window.h"
+#include "logging_helper.h"
 
 static void appsync_value_changed_callback(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void appsync_value_changed_callback(void)");
+    LOG_FUNC();
 
     flash_text(appsync_values.text);
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void tick_handler(struct tm *tick_time, TimeUnits units_changed)");
+    LOG_FUNC();
 
     update_time();
 }
 
 static void handle_init(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_init(void)");
+    LOG_FUNC();
 
     storage_init();
     bt_state_init(update_time);
@@ -31,7 +32,7 @@ static void handle_init(void) {
 }
 
 static void handle_deinit(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void handle_deinit(void)");
+    LOG_FUNC();
 
     tick_timer_service_unsubscribe();
 
@@ -44,7 +45,7 @@ static void handle_deinit(void) {
 }
 
 int main(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "int main(void)");
+    LOG_FUNC();
 
     handle_init();
     app_event_loop();

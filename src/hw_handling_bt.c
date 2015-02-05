@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "stringbuffer.h"
 #include "hw_handling.h"
+#include "logging_helper.h"
 
 // States and string descriptions of that states and the respective callbacks.
 static bool               bt_state;
@@ -14,7 +15,8 @@ int   bt_state_string_dirty;
 // - The handler updates the string from the received values and calls the registered callback.
 // - The deinitializer deregisters the callback.
 static void handle_bt_event(bool connected) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void handle_bt_event(bool connected)");
+    LOG_FUNC();
+
     bt_state = connected;
 
     stringbuffer_init(&bt_state_sb);
@@ -31,7 +33,8 @@ static void handle_bt_event(bool connected) {
 }
 
 void bt_state_init(hardware_changed_callback c) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void bt_state_init(hardware_changed_callback c)");
+    LOG_FUNC();
+
     bt_state_changed_callback = c;
     bt_state = bluetooth_connection_service_peek();
     handle_bt_event(bt_state);
@@ -39,6 +42,7 @@ void bt_state_init(hardware_changed_callback c) {
 }
 
 void bt_state_deinit(void) {
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "void bt_state_deinit(void)");
+    LOG_FUNC();
+
     bluetooth_connection_service_unsubscribe();
 }
