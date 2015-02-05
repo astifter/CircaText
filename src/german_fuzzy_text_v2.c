@@ -4,7 +4,6 @@
 // Include the stringbuffer handling.
 #include "stringbuffer.h"
 static stringbuffer sbval;
-static int last_section = -1;
 
 // Takes hours and minutes and converts them to a German time text.
 // This is the version that provides a shorter version of the time, with 
@@ -26,8 +25,8 @@ char* german_fuzzy_text_v2(int hour, int minute) {
     // different terms.  "fünf vor", for the sections 2, 5, 8, 11 use "fünf
     int section = minute / 5;
 
-    if (last_section == section) { german_fuzzy_text_dirty = 0; return sbval.retval; }
-    last_section = section;
+    if (german_fuzzy_text_last_section == section) { german_fuzzy_text_dirty = 0; return sbval.retval; }
+    german_fuzzy_text_last_section = section;
 
     // Prepare string for returning, reset used and free counters.
     stringbuffer_init(&sbval);

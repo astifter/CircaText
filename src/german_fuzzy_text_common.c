@@ -17,3 +17,4 @@ const char* german_numbers[] = {
 };
 
 int german_fuzzy_text_dirty = 0;
+int german_fuzzy_text_last_section = -1;

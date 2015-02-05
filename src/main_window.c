@@ -22,6 +22,7 @@ static const char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul",
 
 static void update_time_timer_callback(void* data) {
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "update_time()");
+    german_fuzzy_text_last_section = -1;
     update_time();
 }
 
@@ -180,6 +181,8 @@ static void main_window_unload(Window *window) {
 
 // Creates window and loads window handlers, pushes window onto display stack.
 void main_window_create(void) {
+    german_fuzzy_text_last_section = -1;
+
     // Create window and add window handlers.
     s_main_window = window_create();
     window_set_window_handlers(s_main_window, (WindowHandlers){
