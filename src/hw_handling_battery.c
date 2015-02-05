@@ -33,7 +33,7 @@ static void handle_battery_event(BatteryChargeState s) {
             stringbuffer_append(&battery_state_sb, " (p)");
         }
     } else {
-        stringbuffer_append_fs(&battery_state_sb, " (%s)", battery_estimate_string());
+        stringbuffer_append_fs(&battery_state_sb, " | %s", battery_estimate_string());
     }
 
     battery_state_string = battery_state_sb.retval;

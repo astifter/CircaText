@@ -5,9 +5,10 @@
 
 // Indices to storage and data to access copies of stored values.
 enum {
-  SELECTED_VERSION = 0x0,
-  BATTERY_ESTIMATE = 0x10001,
-  MAXIMUM_EVER_USED = 0x10001,
+    SELECTED_VERSION = 0x0,
+    BATTERY_ESTIMATE = 0x10001,
+    LAST_FULL_TIMESTAMP = 0x10002,
+    MAXIMUM_EVER_USED = 0x10002,
 };
 storage_t storage;
 
@@ -48,6 +49,12 @@ void storage_init(void) {
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init(): init %d", BATTERY_ESTIMATE);
     }
     persist_read_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
+    if (!persist_exists(LAST_FULL_TIMESTAMP)) {
+        time_t initial = (time_t)-1;
+        persist_write_int(LAST_FULL_TIMESTAMP, initial);
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init(): init %d with data %d", BATTERY_ESTIMATE initial);
+    }
+    storage.last_full_timestamp = persist_read_int(LAST_FULL_TIMESTAMP);
 
     //app_timer_register(10000, app_log_storage_log, NULL);
 }

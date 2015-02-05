@@ -38,3 +38,21 @@ void stringbuffer_append_fi(stringbuffer* sb, const char* fmt, const int value) 
     unsigned int new = snprintf(sb->current, sb->free+1, fmt, value);
     stringbuffer_update_counters(sb, new);
 }
+
+void stringbuffer_append_ti(stringbuffer* sb, unsigned int value) {
+    unsigned int seconds = value % 60; value /= 60;
+    unsigned int minutes = value % 60; value /= 60;
+    unsigned int hours   = value % 24; value /= 24;
+    unsigned int days    = value;
+
+    if (days == 0 && hours == 0) {
+        stringbuffer_append_fi(sb, "%dm", minutes);
+        stringbuffer_append_fi(sb, "%ds", seconds);
+    } else if (days == 0) {
+        stringbuffer_append_fi(sb, "%dh", hours);
+        stringbuffer_append_fi(sb, "%dm", minutes);
+    } else {
+        stringbuffer_append_fi(sb, "%dd", days);
+        stringbuffer_append_fi(sb, "%dh", hours);
+    }
+}

@@ -7,6 +7,7 @@
 typedef struct {
     char selectedVersion[64];
     battery_estimate_data battery_estimate;
+    time_t last_full_timestamp;
 } storage_t;
 extern storage_t storage;
 

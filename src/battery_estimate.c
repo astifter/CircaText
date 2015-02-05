@@ -28,22 +28,13 @@ static void battery_estimate_update_string(BatteryChargeState current) {
     unsigned int remaining = current.charge_percent / 10;
     unsigned int remaining_secs = remaining * average;
 
-    unsigned int seconds = remaining_secs % 60; remaining_secs /= 60;
-    unsigned int minutes = remaining_secs % 60; remaining_secs /= 60;
-    unsigned int hours   = remaining_secs % 24; remaining_secs /= 24;
-    unsigned int days    = remaining_secs;
-
     stringbuffer_init(&battery_estimate_sb);
-    if (days == 0 && hours == 0) {
-        stringbuffer_append_fi(&battery_estimate_sb, "%dm", minutes);
-        stringbuffer_append_fi(&battery_estimate_sb, "%ds", seconds);
-    } else if (days == 0) {
-        stringbuffer_append_fi(&battery_estimate_sb, "%dh", hours);
-        stringbuffer_append_fi(&battery_estimate_sb, "%dm", minutes);
-    } else {
-        stringbuffer_append_fi(&battery_estimate_sb, "%dd", days);
-        stringbuffer_append_fi(&battery_estimate_sb, "%dh", hours);
+    stringbuffer_append_ti (&battery_estimate_sb, remaining_secs);
+    if (storage.last_full_timestamp != -1) {
+        stringbuffer_append_str(&battery_estimate_sb, " | ");
+        stringbuffer_append_ti (&battery_estimate_sb, time(NULL) - storage.last_full_timestamp);
     }
+
     //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "battery_estimate_sb: %s", battery_estimate_sb.retval);
 }
 
@@ -72,6 +63,11 @@ void battery_estimate_update(BatteryChargeState current) {
                 //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "battery_estimate.averate_data[%d] = %ld", storage.battery_estimate.average_data_write_head, storage.battery_estimate.averate_data[storage.battery_estimate.average_data_write_head]);
             }
         }
+    }
+    if ((storage.battery_estimate.previous_state.is_plugged && storage.battery_estimate.previous_state.charge_percent == 100) &&
+        (!current.is_plugged && current.charge_percent == 100)) {
+        storage.last_full_timestamp = time(NULL);
+        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "recording timestamp of full charge")
     }
 
     if (battery_estimate_isunlocked) {
