@@ -50,8 +50,7 @@ void storage_init(void) {
     }
     persist_read_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
     if (!persist_exists(LAST_FULL_TIMESTAMP)) {
-        time_t initial = (time_t)-1;
-        persist_write_int(LAST_FULL_TIMESTAMP, initial);
+        persist_write_int(LAST_FULL_TIMESTAMP, (time_t)-1);
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "storage_init(): init %d with data %d", BATTERY_ESTIMATE initial);
     }
     storage.last_full_timestamp = persist_read_int(LAST_FULL_TIMESTAMP);
@@ -65,6 +64,7 @@ void storage_persist(void) {
 
     persist_write_string(SELECTED_VERSION, storage.selectedVersion);
     persist_write_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
+    persist_write_int(LAST_FULL_TIMESTAMP, storage.last_full_timestamp);
 
     //app_log_storage_log();
 }
