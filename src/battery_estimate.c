@@ -29,6 +29,7 @@ static void battery_estimate_update_string(BatteryChargeState current) {
     unsigned int remaining_secs = remaining * average;
 
     stringbuffer_init(&battery_estimate_sb);
+    stringbuffer_append_str(&battery_estimate_sb, " | ");
     stringbuffer_append_ti (&battery_estimate_sb, remaining_secs);
     if (storage.last_full_timestamp != -1) {
         stringbuffer_append_str(&battery_estimate_sb, " | ");
