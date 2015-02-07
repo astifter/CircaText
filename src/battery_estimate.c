@@ -69,6 +69,7 @@ void battery_estimate_update(BatteryChargeState current) {
     int needspersistence = false;
     // if estimation can be updated
     if (do_estimate_update) {
+        LOG(LOG_BATTERY, "pervious and current state are valid, updating average data");
         be->average_data_write_head += 1;
         if (be->average_data_write_head >= battery_estimate_data_average_data_num) {
             be->average_data_write_head = 0;
