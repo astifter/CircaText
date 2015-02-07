@@ -28,9 +28,9 @@ static void handle_battery_event(BatteryChargeState s) {
 
     if (battery_state.is_plugged) {
         if (battery_state.is_charging) {
-            stringbuffer_append(&battery_state_sb, " (p, c)");
+            stringbuffer_append(&battery_state_sb, " | p,c");
         } else {
-            stringbuffer_append(&battery_state_sb, " (p)");
+            stringbuffer_append(&battery_state_sb, " | p");
         }
     } else {
         stringbuffer_append_fs(&battery_state_sb, "%s", battery_estimate_string());
@@ -38,6 +38,7 @@ static void handle_battery_event(BatteryChargeState s) {
 
     battery_state_string = battery_state_sb.retval;
     battery_state_string_dirty = 1;
+
     battery_state_changed_callback();
 }
 

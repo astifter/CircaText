@@ -29,6 +29,7 @@ static void handle_bt_event(bool connected) {
 
     bt_state_string = bt_state_sb.retval;
     bt_state_string_dirty = 1;
+
     bt_state_changed_callback();
 }
 

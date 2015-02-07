@@ -39,7 +39,7 @@ static void populate_values(void) {
     }
 
     appsync_values.text = sb.retval;
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "populate_values(void): settings string:\n%s", appsync_values.text);
+    LOG_EXT(LOG_APPSYNC, "settings string:\n%s", appsync_values.text);
 }
 
 // Called when the settings change, takes them and writes them into storage.
@@ -49,23 +49,23 @@ static void sync_tuple_changed_callback(const uint32_t key,
                                         const Tuple* old_tuple,
                                         void* context) {
     LOG_FUNC();
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "key: %u", (unsigned int)key);
 
     switch (key) {
         case SELECTED_VERSION: {
-            //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "SELECTED_VERSION: %s", new_tuple->value->cstring);
+            LOG_EXT(LOG_APPSYNC, "SELECTED_VERSION: %s", new_tuple->value->cstring);
             strcpy(storage.selectedVersion, new_tuple->value->cstring);
             storage_persist();
             populate_values();
         } break;
     }
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync_tuple_changed_callback() exiting to callback");
+
+    LOG(LOG_APPSYNC, "sync_tuple_changed_callback() exiting to callback");
     callback();
 }
 
 static void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
     LOG_FUNC();
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "sync error: %d", app_message_error);
+    LOG_EXT(LOG_APPSYNC, "sync error: %d", app_message_error);
 }
 
 // Initializes app_sync by populating values, storing callback, registering
@@ -80,12 +80,13 @@ void appsync_init(appsync_callback c) {
        TupletCString(SELECTED_VERSION, (const char*)(storage.selectedVersion))
     };
 
+    LOG(LOG_APPSYNC, "app_sync_init()");
     app_sync_init(&sync,
                   sync_buffer, sizeof(sync_buffer),
                   initial_values, ARRAY_LENGTH(initial_values),
                   sync_tuple_changed_callback, sync_error_callback, NULL);
 
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "app_message_open()");
+    LOG(LOG_APPSYNC, "app_message_open()");
     app_message_open(124, 124);
 }
 
@@ -93,5 +94,6 @@ void appsync_init(appsync_callback c) {
 void appsync_deinit(void) {
     LOG_FUNC();
 
+    LOG(LOG_APPSYNC, "app_sync_deinit()");
     app_sync_deinit(&sync);
 }

@@ -32,7 +32,7 @@ void flash_text(const char* text) {
     LOG_FUNC();
 
     if (!ui_updates_enabled) {
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): not done, not enabled");
+        LOG(LOG_FACEUPDATE, "static void update_time(): not done, not enabled");
         return;
     }
 
@@ -47,7 +47,7 @@ void update_time(void) {
     LOG_FUNC();
 
     if (!ui_updates_enabled) {
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): not done, not enabled");
+        LOG(LOG_FACEUPDATE, "static void update_time(): not done, not enabled");
         return;
     }
 
@@ -55,7 +55,7 @@ void update_time(void) {
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
 
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): fetch german text");
+    LOG(LOG_FACEUPDATE, "static void update_time(): fetch german text");
     // Use german_fuzzy_text to render German text time and display in layer.
     char* buffer = appsync_values.time_to_text_pointer(tick_time->tm_hour, tick_time->tm_min);
     if (german_fuzzy_text_dirty) {
@@ -64,7 +64,7 @@ void update_time(void) {
         german_fuzzy_text_dirty = 0;
     }
 
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display plain time");
+    LOG(LOG_FACEUPDATE, "static void update_time(): display plain time");
     // Use a static (long lived) buffer for the numeric time.
     static char time[] = "00:00";
     // Write the current hours and minutes into the buffer, considerung the
@@ -79,10 +79,10 @@ void update_time(void) {
 
     int weekday = tick_time->tm_wday-1;
     if (weekday < 0) weekday += 7;
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display date");
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): day: %d", weekday);
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): mday: %d", tick_time->tm_mday);
-    //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): month: %d", tick_time->tm_mon);
+    LOG(LOG_FACEUPDATE, "static void update_time(): display date");
+    LOG_EXT(LOG_FACEUPDATE, "static void update_time(): day: %d", weekday);
+    LOG_EXT(LOG_FACEUPDATE, "static void update_time(): mday: %d", tick_time->tm_mday);
+    LOG_EXT(LOG_FACEUPDATE, "static void update_time(): month: %d", tick_time->tm_mon);
     // Use a static (long lived) buffer for the numeric date.
     static char date[80];
     snprintf(date, 80, "%s, %d. %s",
@@ -96,7 +96,6 @@ void update_time(void) {
 
     // Fetch and print BlueTooth status information.
     if (bt_state_string_dirty) {
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display bt info");
         LOG(LOG_FACEUPDATE, "updating s_info1_layer");
         text_layer_set_text(s_info1_layer, bt_state_string);
         bt_state_string_dirty = 0;
@@ -104,7 +103,6 @@ void update_time(void) {
 
     // Fetch and print battery status information.
     if (battery_state_string_dirty) {
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "static void update_time(): display battery info");
         LOG(LOG_FACEUPDATE, "updating s_info2_layer");
         text_layer_set_text(s_info2_layer, battery_state_string);
         battery_state_string_dirty = 0;
