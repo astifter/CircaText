@@ -20,7 +20,7 @@ static void battery_estimate_update_string(BatteryChargeState current) {
         sum += storage.battery_estimate.averate_data[i];
     }
     unsigned int average = sum / battery_estimate_data_average_data_num;
-    unsigned int remaining = current.charge_percent / 10;
+    unsigned int remaining = storage.battery_estimate.previous_state.charge_percent / 10;
     unsigned int remaining_secs = remaining * average;
 
     stringbuffer_init(&battery_estimate_sb);
@@ -36,6 +36,7 @@ static void battery_estimate_update_string(BatteryChargeState current) {
 
 void battery_estimate_update(BatteryChargeState current) {
     LOG_FUNC();
+    BatteryChargeState* previous = &(storage.battery_estimate.previous_state);
 
     // if
     // - both current and former state are decharing
@@ -44,9 +45,9 @@ void battery_estimate_update(BatteryChargeState current) {
     // then
     // - advance write head, wrap around if necessary
     // - write a new time difference for a 10% drop
-    if (!current.is_charging && !storage.battery_estimate.previous_state.is_charging &&
-        !current.is_plugged && !storage.battery_estimate.previous_state.is_plugged      ) {
-        if (current.charge_percent == (storage.battery_estimate.previous_state.charge_percent - 10)) {
+    if (!current.is_charging && !previous->is_charging &&
+        !current.is_plugged && !previous->is_plugged      ) {
+        if (current.charge_percent == (previous->charge_percent - 10)) {
             time_t current_timestamp = time(NULL);
             if (current_timestamp - 86400 < storage.battery_estimate.previous_state_timestamp) {
                 storage.battery_estimate.average_data_write_head += 1;
@@ -62,15 +63,13 @@ void battery_estimate_update(BatteryChargeState current) {
     }
 
     // store the timestamp the watch was last charged fully and unplugged.
-    if ((storage.battery_estimate.previous_state.is_plugged && storage.battery_estimate.previous_state.charge_percent == 100) &&
+    if ((previous->is_plugged && previous->charge_percent == 100) &&
         (!current.is_plugged && current.charge_percent == 100)) {
         storage.last_full_timestamp = time(NULL);
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "recording timestamp of full charge")
     }
 
-    if (storage.battery_estimate.previous_state.is_charging    != current.is_charging ||
-        storage.battery_estimate.previous_state.is_plugged     != current.is_plugged  ||
-        storage.battery_estimate.previous_state.charge_percent != current.charge_percent) {
+    if (memcmp(previous, &current, sizeof(BatteryChargeState)) != 0) {
         LOG(LOG_BATTERY, "state has changed, recording new");
         memcpy(&(storage.battery_estimate.previous_state), &current, sizeof(BatteryChargeState));
         storage.battery_estimate.previous_state_timestamp = time(NULL);
