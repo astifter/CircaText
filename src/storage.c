@@ -66,7 +66,7 @@ void storage_persist(void) {
     persist_write_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
     persist_write_int(LAST_FULL_TIMESTAMP, storage.last_full_timestamp);
 
-    app_log_storage_log();
+    app_log_storage_log(NULL);
 }
 
 // Deinitalization, currently just writes back values but might do more in the
