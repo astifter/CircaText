@@ -12,17 +12,17 @@ enum {
 };
 storage_t storage;
 
-//static void app_log_storage_log(void* data) {
-//    LOG_EXT(LOG_STORAGE, "storage.selectedVersion: %s", storage.selectedVersion);
-//    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state_timestamp: %ld", storage.battery_estimate.previous_state_timestamp);
-//    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.charge_percent: %d", storage.battery_estimate.previous_state.charge_percent);
-//    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.is_charging: %d", storage.battery_estimate.previous_state.is_charging);
-//    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.is_plugged: %d", storage.battery_estimate.previous_state.is_plugged);
-//    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.average_data_write_head: %d", storage.battery_estimate.average_data_write_head);
-//    for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
-//        LOG_EXT(LOG_STORAGE, "storage.battery_estimate.averate_data[%d]: %ld", i, storage.battery_estimate.averate_data[i]);
-//    }
-//}
+static void app_log_storage_log(void* data) {
+    LOG_EXT(LOG_STORAGE, "storage.selectedVersion: %s", storage.selectedVersion);
+    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state_timestamp: %ld", storage.battery_estimate.previous_state_timestamp);
+    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.charge_percent: %d", storage.battery_estimate.previous_state.charge_percent);
+    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.is_charging: %d", storage.battery_estimate.previous_state.is_charging);
+    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.is_plugged: %d", storage.battery_estimate.previous_state.is_plugged);
+    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.average_data_write_head: %d", storage.battery_estimate.average_data_write_head);
+    for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
+        LOG_EXT(LOG_STORAGE, "storage.battery_estimate.averate_data[%d]: %ld", i, storage.battery_estimate.averate_data[i]);
+    }
+}
 
 // Makes sure storage is populated (by checking and, on absence, writing
 // defaults) and then reading values.
@@ -66,7 +66,7 @@ void storage_persist(void) {
     persist_write_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
     persist_write_int(LAST_FULL_TIMESTAMP, storage.last_full_timestamp);
 
-    //app_log_storage_log();
+    app_log_storage_log();
 }
 
 // Deinitalization, currently just writes back values but might do more in the
