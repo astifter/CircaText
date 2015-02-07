@@ -5,16 +5,11 @@
 #include "logging_helper.h"
 
 static stringbuffer battery_estimate_sb;
-static int          battery_estimate_isunlocked = 0;
 
 void battery_estimate_init(void) {
     LOG_FUNC();
 
     stringbuffer_init(&battery_estimate_sb);
-}
-
-void battery_estimate_unlock(void) {
-    battery_estimate_isunlocked = 1;
 }
 
 static void battery_estimate_update_string(BatteryChargeState current) {
@@ -65,16 +60,20 @@ void battery_estimate_update(BatteryChargeState current) {
             }
         }
     }
+
+    // store the timestamp the watch was last charged fully and unplugged.
     if ((storage.battery_estimate.previous_state.is_plugged && storage.battery_estimate.previous_state.charge_percent == 100) &&
         (!current.is_plugged && current.charge_percent == 100)) {
         storage.last_full_timestamp = time(NULL);
         //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "recording timestamp of full charge")
     }
 
-    if (battery_estimate_isunlocked) {
+    if (storage.battery_estimate.previous_state.is_charging    != current.is_charging ||
+        storage.battery_estimate.previous_state.is_plugged     != current.is_plugged  ||
+        storage.battery_estimate.previous_state.charge_percent != current.charge_percent) {
+        LOG(LOG_BATTERY, "state has changed, recording new");
         memcpy(&(storage.battery_estimate.previous_state), &current, sizeof(BatteryChargeState));
         storage.battery_estimate.previous_state_timestamp = time(NULL);
-        //app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "battery_estimate_isunlocked, writing dataset");
         storage_persist();
     }
 

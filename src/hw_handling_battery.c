@@ -59,8 +59,6 @@ void battery_state_init(hardware_changed_callback c) {
     handle_battery_event(battery_state);
     battery_state_service_subscribe(handle_battery_event);
 
-    battery_estimate_unlock();
-
     // THIS MUST NOT BE ENABLED app_timer_register(15000, test_timer, NULL);
 }
 
