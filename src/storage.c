@@ -51,7 +51,7 @@ void storage_init(void) {
     persist_read_data(BATTERY_ESTIMATE, (void*)&(storage.battery_estimate), sizeof(battery_estimate_data));
     if (!persist_exists(LAST_FULL_TIMESTAMP)) {
         persist_write_int(LAST_FULL_TIMESTAMP, (time_t)-1);
-        LOG_EXT(LOG_STORAGE, "storage_init(): init %d with data %ld", BATTERY_ESTIMATE, (time_t)-1);
+        LOG_EXT(LOG_STORAGE, "storage_init(): init %d with data %ld", LAST_FULL_TIMESTAMP, (time_t)-1);
     }
     storage.last_full_timestamp = persist_read_int(LAST_FULL_TIMESTAMP);
 
