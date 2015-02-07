@@ -22,6 +22,7 @@ static void app_log_storage_log(void* data) {
     for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
         LOG_EXT(LOG_STORAGE, "storage.battery_estimate.averate_data[%d]: %ld", i, storage.battery_estimate.averate_data[i]);
     }
+    LOG_EXT(LOG_STORAGE, "storage.last_full_timestamp: %ld", storage.last_full_timestamp);
 }
 
 // Makes sure storage is populated (by checking and, on absence, writing
