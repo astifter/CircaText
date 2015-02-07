@@ -65,6 +65,9 @@ void battery_estimate_update(BatteryChargeState current) {
         LOG(LOG_BATTERY, "not updating estimate, pervious state is too old")
         do_estimate_update = false;
     }
+
+    int needspersistence = false;
+    // if estimation can be updated
     if (do_estimate_update) {
         be->average_data_write_head += 1;
         if (be->average_data_write_head >= battery_estimate_data_average_data_num) {
@@ -73,6 +76,7 @@ void battery_estimate_update(BatteryChargeState current) {
 
         time_t difference = current_timestamp - be->previous_state_timestamp;
         be->averate_data[be->average_data_write_head] = difference;
+        needspersistence = true;
         
         LOG_EXT(LOG_BATTERY, "battery_estimate.averate_data[%d] = %ld", be->average_data_write_head, be->averate_data[be->average_data_write_head]);
     }
@@ -82,6 +86,7 @@ void battery_estimate_update(BatteryChargeState current) {
         (!current.is_plugged && current.charge_percent == 100)       ) {
         LOG(LOG_BATTERY, "recording timestamp of full charge")
         storage.last_full_timestamp = time(NULL);
+        needspersistence = true;
     }
 
     // when the state has changed, record new state and timestamp.
@@ -89,7 +94,9 @@ void battery_estimate_update(BatteryChargeState current) {
         LOG(LOG_BATTERY, "state has changed, recording new");
         memcpy(previous, &current, sizeof(BatteryChargeState));
         be->previous_state_timestamp = time(NULL);
+        needspersistence = true;
     }
+    if (needspersistence) storage_persist();
 
     battery_estimate_update_string(current);
 }
