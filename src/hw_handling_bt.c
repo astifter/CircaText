@@ -20,11 +20,10 @@ static void handle_bt_event(bool connected) {
     bt_state = connected;
 
     stringbuffer_init(&bt_state_sb);
-    stringbuffer_append(&bt_state_sb, "bt: ");
     if (bt_state) {
-        stringbuffer_append(&bt_state_sb, "conn");
+        stringbuffer_append(&bt_state_sb, "bt ok");
     } else {
-        stringbuffer_append(&bt_state_sb, "disconn");
+        stringbuffer_append(&bt_state_sb, "no bt");
     }
 
     bt_state_string = bt_state_sb.retval;
