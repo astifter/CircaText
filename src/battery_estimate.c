@@ -5,6 +5,7 @@
 #include "logging_helper.h"
 
 static stringbuffer battery_estimate_sb;
+static int          battery_estimate_secs = -1;
 
 void battery_estimate_init(void) {
     LOG_FUNC();
@@ -12,21 +13,14 @@ void battery_estimate_init(void) {
     stringbuffer_init(&battery_estimate_sb);
 }
 
-static void battery_estimate_update_string(BatteryChargeState current) {
+static void battery_estimate_update_string(void) {
     LOG_FUNC();
-    battery_estimate_data* be = &(storage.battery_estimate);
-
-    unsigned int sum = 0;
-    for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
-        sum += be->averate_data[i];
-    }
-    unsigned int average = sum / battery_estimate_data_average_data_num;
-    unsigned int remaining = be->previous_state.charge_percent / 10;
-    unsigned int remaining_secs = remaining * average;
 
     stringbuffer_init(&battery_estimate_sb);
-    stringbuffer_append_str(&battery_estimate_sb, " | ");
-    stringbuffer_append_ti (&battery_estimate_sb, remaining_secs);
+    if (battery_estimate_secs != -1) {
+        stringbuffer_append_str(&battery_estimate_sb, " | ");
+        stringbuffer_append_ti (&battery_estimate_sb, battery_estimate_secs);
+    }
     if (storage.last_full_timestamp != -1) {
         stringbuffer_append_str(&battery_estimate_sb, " | ");
         stringbuffer_append_ti (&battery_estimate_sb, time(NULL) - storage.last_full_timestamp);
@@ -99,12 +93,20 @@ void battery_estimate_update(BatteryChargeState current) {
     }
     if (needspersistence) storage_persist();
 
-    battery_estimate_update_string(current);
+    unsigned int sum = 0;
+    for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
+        sum += be->averate_data[i];
+    }
+    unsigned int average = sum / battery_estimate_data_average_data_num;
+    unsigned int remaining = be->previous_state.charge_percent / 10;
+    battery_estimate_secs = remaining * average;
+
+    battery_estimate_update_string();
 }
 
 char* battery_estimate_string(void) {
     LOG_FUNC();
-
+    battery_estimate_update_string();
     return battery_estimate_sb.retval;
 }
 

@@ -5,23 +5,14 @@
 #include "logging_helper.h"
 
 // States and string descriptions of that states and the respective callbacks.
-static BatteryChargeState battery_state;
-static stringbuffer       battery_state_sb;
+static BatteryChargeState        battery_state;
+static stringbuffer              battery_state_sb;
 static hardware_changed_callback battery_state_changed_callback;
-char* battery_state_string;
-int   battery_state_string_dirty;
 
 // THIS MUST NOT BE ENABLED static BatteryChargeState test_battery_state = { 100, 0, 0 };
 
-// The hardware handlers operate after the same principle:
-// - The initializer reads the state directly, uses the handler to update the string description and registers the hw-callback handler.
-// - The handler updates the string from the received values and calls the registered callback.
-// - The deinitializer deregisters the callback.
-static void handle_battery_event(BatteryChargeState s) {
+char* battery_state_string(void) {
     LOG_FUNC();
-
-    battery_state = s;
-    battery_estimate_update(s);
 
     stringbuffer_init(&battery_state_sb);
     stringbuffer_append_fi(&battery_state_sb, "%d%%", battery_state.charge_percent);
@@ -36,8 +27,18 @@ static void handle_battery_event(BatteryChargeState s) {
         stringbuffer_append_fs(&battery_state_sb, "%s", battery_estimate_string());
     }
 
-    battery_state_string = battery_state_sb.retval;
-    battery_state_string_dirty = 1;
+    return battery_state_sb.retval;
+}
+
+// The hardware handlers operate after the same principle:
+// - The initializer reads the state directly, uses the handler to update the string description and registers the hw-callback handler.
+// - The handler updates the string from the received values and calls the registered callback.
+// - The deinitializer deregisters the callback.
+static void handle_battery_event(BatteryChargeState s) {
+    LOG_FUNC();
+
+    battery_state = s;
+    battery_estimate_update(s);
 
     battery_state_changed_callback();
 }

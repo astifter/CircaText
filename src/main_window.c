@@ -101,12 +101,8 @@ void update_time(void) {
         bt_state_string_dirty = 0;
     }
 
-    // Fetch and print battery status information.
-    if (battery_state_string_dirty) {
-        LOG(LOG_FACEUPDATE, "updating s_info2_layer");
-        text_layer_set_text(s_info2_layer, battery_state_string);
-        battery_state_string_dirty = 0;
-    }
+    LOG(LOG_FACEUPDATE, "updating s_info2_layer");
+    text_layer_set_text(s_info2_layer, battery_state_string());
 }
 
 // Updates the background bitmap layer.

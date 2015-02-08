@@ -16,5 +16,4 @@ extern int   bt_state_string_dirty;
 // Functions for battery handling.
 void battery_state_init(hardware_changed_callback c);
 void battery_state_deinit(void);
-extern char* battery_state_string;
-extern int   battery_state_string_dirty;
+char* battery_state_string(void);
