@@ -120,11 +120,11 @@ static void update_bg_layer(struct Layer *layer, GContext *ctx) {
 
     // Draw top and bottom line, use calculated data.
     uint16_t topline = inforect.origin.y + 3;
-    graphics_draw_line(ctx, GPoint(inforect.origin.x, topline),
-                            GPoint(inforect.size.w,   topline));
+    graphics_draw_line(ctx, GPoint(inforect.origin.x-1, topline),
+                            GPoint(inforect.size.w+2,   topline));
     uint16_t bottomline = inforect.origin.y + inforect.size.h + 1;
-    graphics_draw_line(ctx, GPoint(inforect.origin.x, bottomline),
-                            GPoint(inforect.size.w,   bottomline));
+    graphics_draw_line(ctx, GPoint(inforect.origin.x-1, bottomline),
+                            GPoint(inforect.size.w+2,   bottomline));
 }
 
 // Loads and sets up main window.
@@ -139,11 +139,11 @@ static void main_window_load(Window *window) {
     }
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_24);
-        daterect = GRect(0, screensize.size.h-h-3, screensize.size.w, h+3);
+        daterect = GRect(1, screensize.size.h-h-3, screensize.size.w-2, h+3);
     }
     {
         int16_t h = get_text_size(FONT_KEY_GOTHIC_14);
-        inforect = GRect(0, daterect.origin.y-h, screensize.size.w, h);
+        inforect = GRect(1, daterect.origin.y-h, screensize.size.w-2, h);
     }
 
     // Create blank, black background layer.
@@ -152,6 +152,8 @@ static void main_window_load(Window *window) {
     layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bg_layer));
 
     // Create german text layer.
+    screensize.origin.x += 1;
+    screensize.size.w -= 2;
     s_german_text_layer = create_text_layer(window, screensize, FONT_KEY_GOTHIC_28_BOLD);
 
     // Create time text layer and add it to window.
