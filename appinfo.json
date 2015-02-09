@@ -13,7 +13,7 @@
     ],
     "appKeys": {
         "selectedVersion" : 0,
-        "batteryDisplay" : 1,
+        "batteryDisplay" : 1
     },
     "resources": {
         "media": [
