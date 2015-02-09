@@ -85,8 +85,8 @@ void battery_estimate_update(BatteryChargeState current) {
     }
 
     // store the timestamp the watch was last charged fully and unplugged.
-    if ((previous->is_plugged && previous->charge_percent == 100) &&
-        (!current.is_plugged && current.charge_percent == 100)       ) {
+    if ((previous->is_plugged && previous->charge_percent == 100 && !previous->is_charging) &&
+        (!current.is_plugged && current.charge_percent == 100                             )    ) {
         LOG(LOG_BATTERY, "recording timestamp of full charge")
         storage.last_full_timestamp = time(NULL);
         needspersistence = true;
