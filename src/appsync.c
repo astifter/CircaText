@@ -18,6 +18,7 @@ appsync_callback callback;
 
 enum {
     SELECTED_VERSION = 0x0,
+    BATTERY_DISPLAY = 0x1,
 };
 
 // Reads back values from storage and sets "synced" values accordingly. Also
@@ -37,6 +38,15 @@ static void populate_values(void) {
         appsync_values.time_to_text_pointer = german_fuzzy_text_v2;
         stringbuffer_append(&sb, "Kurz\n");
     }
+    stringbuffer_append(&sb, "Battery: ");
+    switch (storage.battery_display) {
+        case battery_display_level:      stringbuffer_append(&sb, "l"); break;
+        case (battery_display_level |
+              battery_display_estimate): stringbuffer_append(&sb, "l,e"); break;
+        case (battery_display_level |
+              battery_display_estimate |
+              battery_display_runtime):  stringbuffer_append(&sb, "l,e,r"); break;
+    }
 
     appsync_values.text = sb.retval;
     LOG_EXT(LOG_APPSYNC, "settings string:\n%s", appsync_values.text);
@@ -54,6 +64,13 @@ static void sync_tuple_changed_callback(const uint32_t key,
         case SELECTED_VERSION: {
             LOG_EXT(LOG_APPSYNC, "SELECTED_VERSION: %s", new_tuple->value->cstring);
             strcpy(storage.selectedVersion, new_tuple->value->cstring);
+            storage_persist();
+            populate_values();
+        } break;
+        case BATTERY_DISPLAY: {
+            int value = new_tuple->value->cstring[0] - 0x30;
+            LOG_EXT(LOG_APPSYNC, "BATTERY_DISPLAY: %s", new_tuple->value->cstring);
+            storage.battery_display = value;
             storage_persist();
             populate_values();
         } break;
@@ -76,8 +93,11 @@ void appsync_init(appsync_callback c) {
     populate_values();
     callback = c;
 
+    stringbuffer battery_display_sb; stringbuffer_init(&battery_display_sb);
+    stringbuffer_append_int(&battery_display_sb, storage.battery_display);
     Tuplet initial_values[] = {
-       TupletCString(SELECTED_VERSION, (const char*)(storage.selectedVersion))
+       TupletCString(SELECTED_VERSION, (const char*)(storage.selectedVersion)),
+       TupletCString(BATTERY_DISPLAY, (const char*)(battery_display_sb.retval)),
     };
 
     LOG(LOG_APPSYNC, "app_sync_init()");

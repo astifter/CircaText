@@ -3,6 +3,7 @@
 #include "hw_handling.h"
 #include "battery_estimate.h"
 #include "logging_helper.h"
+#include "storage.h"
 
 // States and string descriptions of that states and the respective callbacks.
 static BatteryChargeState        battery_state;
@@ -15,16 +16,18 @@ char* battery_state_string(void) {
     LOG_FUNC();
 
     stringbuffer_init(&battery_state_sb);
-    stringbuffer_append_fi(&battery_state_sb, "%d%%", battery_state.charge_percent);
+    if (storage.battery_display & battery_display_level) {
+        stringbuffer_append_fi(&battery_state_sb, "%d%%", battery_state.charge_percent);
 
-    if (battery_state.is_plugged) {
-        if (battery_state.is_charging) {
-            stringbuffer_append(&battery_state_sb, " | p,c");
+        if (battery_state.is_plugged) {
+            if (battery_state.is_charging) {
+                stringbuffer_append(&battery_state_sb, " | p,c");
+            } else {
+                stringbuffer_append(&battery_state_sb, " | p");
+            }
         } else {
-            stringbuffer_append(&battery_state_sb, " | p");
+            stringbuffer_append_fs(&battery_state_sb, "%s", battery_estimate_string());
         }
-    } else {
-        stringbuffer_append_fs(&battery_state_sb, "%s", battery_estimate_string());
     }
 
     return battery_state_sb.retval;

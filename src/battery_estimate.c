@@ -17,13 +17,21 @@ static void battery_estimate_update_string(void) {
     LOG_FUNC();
 
     stringbuffer_init(&battery_estimate_sb);
-    if (battery_estimate_secs != -1) {
+    if (storage.battery_display & battery_display_estimate) {
         stringbuffer_append_str(&battery_estimate_sb, " | ");
-        stringbuffer_append_ti (&battery_estimate_sb, battery_estimate_secs);
+        if (battery_estimate_secs != -1) {
+            stringbuffer_append_ti(&battery_estimate_sb, battery_estimate_secs);
+        } else {
+            stringbuffer_append(&battery_estimate_sb, "-");
+        }
     }
-    if (storage.last_full_timestamp != -1) {
+    if (storage.battery_display & battery_display_runtime) {
         stringbuffer_append_str(&battery_estimate_sb, " | ");
-        stringbuffer_append_ti (&battery_estimate_sb, time(NULL) - storage.last_full_timestamp);
+        if (storage.last_full_timestamp != -1) {
+            stringbuffer_append_ti(&battery_estimate_sb, time(NULL) - storage.last_full_timestamp);
+        } else {
+            stringbuffer_append(&battery_estimate_sb, "-");
+        }
     }
 
     LOG_EXT(LOG_BATTERY, "battery_estimate_sb: %s", battery_estimate_sb.retval);
