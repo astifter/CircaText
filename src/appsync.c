@@ -38,7 +38,7 @@ static void populate_values(void) {
         appsync_values.time_to_text_pointer = german_fuzzy_text_v2;
         stringbuffer_append(&sb, "Kurz\n");
     }
-    stringbuffer_append(&sb, "Battery: ");
+    stringbuffer_append(&sb, "Akku-Info: ");
     switch (storage.battery_display) {
         case battery_display_level:      stringbuffer_append(&sb, "l"); break;
         case (battery_display_level |

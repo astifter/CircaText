@@ -47,7 +47,6 @@ void stringbuffer_append_ti(stringbuffer* sb, unsigned int value) {
 
     if (days == 0 && hours == 0) {
         stringbuffer_append_fi(sb, "%dm", minutes);
-        stringbuffer_append_fi(sb, "%d", seconds);
     } else if (days == 0) {
         stringbuffer_append_fi(sb, "%dh", hours);
         stringbuffer_append_fi(sb, "%d", minutes);
