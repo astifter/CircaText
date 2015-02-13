@@ -13,18 +13,20 @@ enum {
 };
 storage_t storage;
 
-static void app_log_storage_log(void* data) {
-    LOG_EXT(LOG_STORAGE, "storage.selectedVersion: %s", storage.selectedVersion);
-    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state_timestamp: %ld", storage.battery_estimate.previous_state_timestamp);
-    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.charge_percent: %d", storage.battery_estimate.previous_state.charge_percent);
-    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.is_charging: %d", storage.battery_estimate.previous_state.is_charging);
-    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.previous_state.is_plugged: %d", storage.battery_estimate.previous_state.is_plugged);
-    LOG_EXT(LOG_STORAGE, "storage.battery_estimate.average_data_write_head: %d", storage.battery_estimate.average_data_write_head);
+static void app_log_storage_log(unsigned int how) {
+    battery_estimate_data* be = &(storage.battery_estimate);
+
+    LOG_EXT(how, "storage.selectedVersion: %s", storage.selectedVersion);
+    LOG_EXT(how, "storage.battery_estimate.previous_state_timestamp: %ld", be->previous_state_timestamp);
+    LOG_EXT(how, "storage.battery_estimate.previous_state.charge_percent: %d", be->previous_state.charge_percent);
+    LOG_EXT(how, "storage.battery_estimate.previous_state.is_charging: %d", be->previous_state.is_charging);
+    LOG_EXT(how, "storage.battery_estimate.previous_state.is_plugged: %d", be->previous_state.is_plugged);
+    LOG_EXT(how, "storage.battery_estimate.average_data_write_head: %d", be->average_data_write_head);
     for (int i = 0; i < battery_estimate_data_average_data_num; i++) {
-        LOG_EXT(LOG_STORAGE, "storage.battery_estimate.averate_data[%d]: %ld", i, storage.battery_estimate.averate_data[i]);
+        LOG_EXT(how, "storage.battery_estimate.averate_data[%d]: %ld", i, be->averate_data[i]);
     }
-    LOG_EXT(LOG_STORAGE, "storage.last_full_timestamp: %ld", storage.last_full_timestamp);
-    LOG_EXT(LOG_STORAGE, "storage.battery_display: %d", storage.battery_display);
+    LOG_EXT(how, "storage.last_full_timestamp: %ld", storage.last_full_timestamp);
+    LOG_EXT(how, "storage.battery_display: %d", storage.battery_display);
 }
 
 // Makes sure storage is populated (by checking and, on absence, writing
@@ -63,7 +65,7 @@ void storage_init(void) {
     }
     storage.battery_display = persist_read_int(BATTERY_DISPLAY);
 
-    //app_timer_register(10000, app_log_storage_log, NULL);
+    app_log_storage_log(LOG_STORAGE_SU);
 }
     
 // Write back values.
@@ -75,7 +77,7 @@ void storage_persist(void) {
     persist_write_int(LAST_FULL_TIMESTAMP, storage.last_full_timestamp);
     persist_write_int(BATTERY_DISPLAY, storage.battery_display);
 
-    app_log_storage_log(NULL);
+    app_log_storage_log(LOG_STORAGE);
 }
 
 // Deinitalization, currently just writes back values but might do more in the
