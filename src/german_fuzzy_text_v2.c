@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include "german_fuzzy_text_common.h"
-#include "logging_helper.h"
 
-// Include the stringbuffer handling.
-#include "stringbuffer.h"
+#include "watchface_base/stringbuffer.h"
+#include "watchface_base/logging_helper.h"
+
+#include "german_fuzzy_text_common.h"
+
 static stringbuffer sbval;
 
 // Takes hours and minutes and converts them to a German time text.

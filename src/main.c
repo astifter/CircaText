@@ -1,10 +1,12 @@
 #include <pebble.h>
-#include "stringbuffer.h"
-#include "storage.h"
+
+#include "watchface_base/stringbuffer.h"
+#include "watchface_base/storage.h"
+#include "watchface_base/hw_handling.h"
+#include "watchface_base/logging_helper.h"
+
 #include "appsync.h"
-#include "hw_handling.h"
 #include "main_window.h"
-#include "logging_helper.h"
 
 static void appsync_value_changed_callback(void) {
     LOG_FUNC();

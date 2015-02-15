@@ -1,10 +1,12 @@
 #include <pebble.h>
+
+#include "watchface_base/stringbuffer.h"
+#include "watchface_base/storage.h"
+#include "watchface_base/logging_helper.h"
+
 #include "german_fuzzy_text_v1.h"
 #include "german_fuzzy_text_v2.h"
-#include "stringbuffer.h"
-#include "storage.h"
 #include "appsync.h"
-#include "logging_helper.h"
 
 // Static variables for holding the synced state and the textual representation
 // of the settings.

@@ -1,12 +1,14 @@
 #include <pebble.h>
-#include "stringbuffer.h"
-#include "storage.h"
+
+#include "watchface_base/stringbuffer.h"
+#include "watchface_base/storage.h"
+#include "watchface_base/hw_handling.h"
+#include "watchface_base/logging_helper.h"
+
 #include "appsync.h"
-#include "hw_handling.h"
-#include "main_window.h"
-#include "text_handling.h"
 #include "german_fuzzy_text_common.h"
-#include "logging_helper.h"
+#include "text_handling.h"
+#include "main_window.h"
 
 static Window      *s_main_window;
 static TextLayer   *s_german_text_layer;

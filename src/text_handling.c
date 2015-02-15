@@ -1,6 +1,8 @@
 #include <pebble.h>
+
+#include "watchface_base/logging_helper.h"
+
 #include "text_handling.h"
-#include "logging_helper.h"
 
 // Handles creation of text layers.
 TextLayer* create_text_layer(Window *window, GRect r, char *fk) {

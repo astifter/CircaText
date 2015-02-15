@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "stringbuffer.h"
+#include "watchface_base/stringbuffer.h"
 stringbuffer sbval;
 
 void printvalues(stringbuffer* sb) {
