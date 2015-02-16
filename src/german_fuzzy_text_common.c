@@ -1,5 +1,3 @@
-#include "german_fuzzy_text_common.h"
-
 const char* german_numbers[] = {
     "null",
     "eins",

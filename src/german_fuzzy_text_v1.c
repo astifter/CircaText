@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "watchface_base/stringbuffer.h"
 #include "watchface_base/logging_helper.h"
 
