@@ -1,8 +1,6 @@
 #include <pebble.h>
 
-#include "watchface_base/stringbuffer.h"
-#include "watchface_base/storage.h"
-#include "watchface_base/hw_handling.h"
+#include "watchface_base/watchface_base.h"
 #include "watchface_base/logging_helper.h"
 
 #include "appsync.h"
@@ -23,9 +21,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 static void handle_init(void) {
     LOG_FUNC();
 
-    storage_init();
-    bt_state_init(update_time);
-    battery_state_init(update_time);
+    watchface_base_init(update_time);
     appsync_init(appsync_value_changed_callback);
 
     main_window_create();
@@ -41,9 +37,7 @@ static void handle_deinit(void) {
     main_window_destroy();
 
     appsync_deinit();
-    battery_state_deinit();
-    bt_state_deinit();
-    storage_deinit();
+    watchface_base_deinit();
 }
 
 int main(void) {
