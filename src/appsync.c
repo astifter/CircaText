@@ -34,11 +34,11 @@ static void populate_values(void) {
     stringbuffer_append(&sb, "Text: ");
     if (strcmp(storage.selectedVersion, "Regular") == 0) {
         appsync_values.time_to_text_pointer = german_fuzzy_text;
-        stringbuffer_append(&sb, "Normal\n");
+        stringbuffer_append(&sb, "normal\n");
     }
     if (strcmp(storage.selectedVersion, "Short") == 0) {
         appsync_values.time_to_text_pointer = german_fuzzy_text_v2;
-        stringbuffer_append(&sb, "Kurz\n");
+        stringbuffer_append(&sb, "kurz\n");
     }
     stringbuffer_append(&sb, "Akku-Info: ");
     switch (storage.battery_display) {
