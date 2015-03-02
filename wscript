@@ -47,10 +47,10 @@ def build(ctx):
 
     if os.path.exists('worker_src'):
         ctx.pbl_worker(source=ctx.path.ant_glob('worker_src/**/*.c'),
-                        target='pebble-worker.elf')
+                       target='pebble-worker.elf')
         ctx.pbl_bundle(elf='pebble-app.elf',
-                        worker_elf='pebble-worker.elf',
-                        js='pebble-js-app.js' if has_js else [])
+                       worker_elf='pebble-worker.elf',
+                       js='pebble-js-app.js' if has_js else [])
     else:
         ctx.pbl_bundle(elf='pebble-app.elf',
                        js='pebble-js-app.js' if has_js else [])

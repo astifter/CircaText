@@ -27,9 +27,6 @@ char* german_fuzzy_text(int hour, int minute) {
     // "fünf vor", for the sections 2, 5, 8, 11 use "fünf nach".
     int section = minute / 5;
 
-    if (german_fuzzy_text_last_section == section) { german_fuzzy_text_dirty = 0; return sbval.retval; }
-    german_fuzzy_text_last_section = section;
-
     // Prepare string for returning, reset used and free counters.
     stringbuffer_init(&sbval);
 
@@ -53,6 +50,5 @@ char* german_fuzzy_text(int hour, int minute) {
     if (hour >= 12) hour -= 12;
     stringbuffer_append(&sbval, german_numbers[hour+1]);
 
-    german_fuzzy_text_dirty = 1;
     return sbval.retval;
 }

@@ -24,7 +24,6 @@ static const char* months[] = { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul",
 static void update_time_timer_callback(void* data) {
     LOG_FUNC();
 
-    german_fuzzy_text_last_section = -1;
     update_time();
 }
 
@@ -58,11 +57,8 @@ void update_time(void) {
     LOG(LOG_FACEUPDATE, "static void update_time(): fetch german text");
     // Use german_fuzzy_text to render German text time and display in layer.
     char* buffer = appsync_values.time_to_text_pointer(tick_time->tm_hour, tick_time->tm_min);
-    if (german_fuzzy_text_dirty) {
-        LOG(LOG_FACEUPDATE, "updating s_german_text_layer");
-        text_layer_set_text(s_german_text_layer, buffer);
-        german_fuzzy_text_dirty = 0;
-    }
+    LOG(LOG_FACEUPDATE, "updating s_german_text_layer");
+    text_layer_set_text(s_german_text_layer, buffer);
 
     LOG(LOG_FACEUPDATE, "static void update_time(): display plain time");
     // Use a static (long lived) buffer for the numeric time.
@@ -95,11 +91,8 @@ void update_time(void) {
     text_layer_set_text(s_date_layer, date);
 
     // Fetch and print BlueTooth status information.
-    if (bt_state_string_dirty) {
-        LOG(LOG_FACEUPDATE, "updating s_info1_layer");
-        text_layer_set_text(s_info1_layer, bt_state_string);
-        bt_state_string_dirty = 0;
-    }
+    LOG(LOG_FACEUPDATE, "updating s_info1_layer");
+    text_layer_set_text(s_info1_layer, bt_state_string);
 
     LOG(LOG_FACEUPDATE, "updating s_info2_layer");
     text_layer_set_text(s_info2_layer, battery_state_string());
@@ -187,8 +180,6 @@ static void main_window_unload(Window *window) {
 // Creates window and loads window handlers, pushes window onto display stack.
 void main_window_create(void) {
     LOG_FUNC();
-
-    german_fuzzy_text_last_section = -1;
 
     // Create window and add window handlers.
     s_main_window = window_create();
