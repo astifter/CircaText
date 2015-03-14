@@ -9,6 +9,11 @@ compareandshow() {
     fi
 }
 
+compile() {
+    target=$1; shift;
+    gcc -DLOG_TESTING -g -o $target $*  -I ../src
+}
+
 # compile testing software
 gcc -DLOG_TESTING -g -o german_fuzzy_text_test german_fuzzy_text_test.c ../src/german_fuzzy_text_v*.c ../src/watchface_base/stringbuffer.c ../src/german_fuzzy_text_common.c -I ../src
 gcc -DLOG_TESTING -g -o stringbuffer_test stringbuffer_test.c ../src/watchface_base/stringbuffer.c -I ../src
@@ -25,3 +30,7 @@ done
 ./stringbuffer_test > stringbuffer_test.out
 compareandshow stringbuffer_test.ref stringbuffer_test.out
 rm stringbuffer_test.out
+
+compile sort_test sort_test.c ../src/watchface_base/quicksort.c
+./sort_test || (echo "sorting broken"; exit -1)
+rm sort_test
