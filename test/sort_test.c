@@ -6,25 +6,25 @@
 #define SIZE 40
 
 int compar(const void* f, const void* s) {
-    const int first = *(const int*)f;
-    const int secnd = *(const int*)s;
+    const time_t first = *(const time_t*)f;
+    const time_t secnd = *(const time_t*)s;
     if (first < secnd) return -1;
     if (first > secnd) return  1;
     return 0;
 }
 
-void print(const char* m, int* data, int s) {
+void print(const char* m, time_t* data, int s) {
     printf("%s:", m);
     for (int i = 0; i < s; i++) {
-        printf("%d,", data[i]);
+        printf("%ld,", data[i]);
     }
     printf("\n");
 }
 
 int main(int argc, char** argv) {
     srand (time(NULL));
-    int data[SIZE];
-    int rata[SIZE];
+    time_t data[SIZE];
+    time_t rata[SIZE];
 
     for (int i = 0; i<SIZE; i++) {
         data[i] = rand() % SIZE;
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     print("rata", rata, SIZE);
 
     quicksort(data, 0, SIZE-1);
-    qsort(rata, SIZE, sizeof(int), compar);
+    qsort(rata, SIZE, sizeof(time_t), compar);
 
     print("data", data, SIZE);
     print("rata", rata, SIZE);
