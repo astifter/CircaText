@@ -18,10 +18,10 @@ static stringbuffer sb;
 appsync_values_t appsync_values;
 appsync_callback callback;
 
-enum {
+typedef enum appsync_message_e {
     SELECTED_VERSION = 0x0,
     BATTERY_DISPLAY = 0x1,
-};
+} appsync_message;
 
 // Reads back values from storage and sets "synced" values accordingly. Also
 // populates textual representation of the values.
