@@ -1,28 +1,33 @@
 {
-    "versionCode": 1,
-    "uuid": "1d2647c3-26a0-4b9c-9470-a5c275a8e063",
-    "longName": "CircaText",
-    "shortName": "CircaText",
-    "companyName": "andreas.neustifter@gmail.com",
-    "versionLabel": "1.4",
-    "watchapp": {
-        "watchface": true
-    },
-    "capabilities": [
-        "configurable"
-    ],
-    "appKeys": {
-        "selectedVersion" : 0,
-        "batteryDisplay" : 1
-    },
-    "resources": {
-        "media": [
-            {
-                "menuIcon": true,
-                "type": "png",
-                "name": "IMAGE_MENU_ICON",
-                "file": "images/logo.png"
-            }
-        ]
-    }
+  "versionCode": 1,
+  "uuid": "1d2647c3-26a0-4b9c-9470-a5c275a8e063",
+  "longName": "CircaText",
+  "shortName": "CircaText",
+  "companyName": "andreas.neustifter@gmail.com",
+  "versionLabel": "1.4",
+  "watchapp": {
+    "watchface": true
+  },
+  "capabilities": [
+    "configurable"
+  ],
+  "appKeys": {
+    "selectedVersion": 0,
+    "batteryDisplay": 1
+  },
+  "resources": {
+    "media": [
+      {
+        "menuIcon": true,
+        "type": "png",
+        "name": "IMAGE_MENU_ICON",
+        "file": "images/logo.png"
+      }
+    ]
+  },
+  "targetPlatforms": [
+    "aplite",
+    "basalt"
+  ],
+  "sdkVersion": "3"
 }
