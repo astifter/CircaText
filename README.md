@@ -9,10 +9,6 @@ Info: http://astifter.github.io/CircaText
 
 Probleme? https://github.com/astifter/CircaText/issues
 
-Fragen? circatext@googlegroups.com
-
-Interesse? https://github.com/astifter/CircaText
-
 How to Release
 --------------
 
