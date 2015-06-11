@@ -112,7 +112,7 @@ static void update_bg_layer(struct Layer *layer, GContext *ctx) {
     GRect inforect = layer_get_frame(text_layer_get_layer(s_info1_layer));
 
     // Draw top and bottom line, use calculated data.
-    uint16_t topline = inforect.origin.y + 3;
+    uint16_t topline = inforect.origin.y + 2;
     graphics_draw_line(ctx, GPoint(inforect.origin.x-1, topline),
                             GPoint(inforect.size.w+2,   topline));
     uint16_t bottomline = inforect.origin.y + inforect.size.h + 1;
