@@ -1,7 +1,8 @@
 title: CircaText
 baseurl: "/CircaText/"
 url: "http://astifter.github.io"
-github_username:  astifter
+github_username: astifter
+email: "circatext@astifter.com"
 
 # build settings
 markdown: kramdown
