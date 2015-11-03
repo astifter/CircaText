@@ -21,6 +21,15 @@
     &:visited {
         color: $grey-color-dark;
     }
+    img {
+        margin-top:-115px;
+        width:100%;
+    }
+    @include media-query($on-palm) {
+        img {
+            margin-top:0px;
+        }
+    }
 }
 
 .site-nav {
