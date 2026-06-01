@@ -1,3 +1,0 @@
-[submodule "src/watchface_base"]
-	path = src/watchface_base
-	url = git@github.com:astifter/pebble_watchface_base.git
