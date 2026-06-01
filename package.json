@@ -20,6 +20,13 @@
                     "file": "images/logo.png",
                     "menuIcon": true,
                     "name": "IMAGE_MENU_ICON",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
+                        "emery",
+                        "flint"
+                    ],
                     "type": "png"
                 }
             ]
