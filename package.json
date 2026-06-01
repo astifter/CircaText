@@ -1,0 +1,41 @@
+{
+    "author": "andreas.neustifter@gmail.com",
+    "dependencies": {},
+    "keywords": [],
+    "name": "circatext",
+    "pebble": {
+        "capabilities": [
+            "configurable"
+        ],
+        "displayName": "CircaText",
+        "enableMultiJS": false,
+        "messageKeys": {
+            "batteryDisplay": 1,
+            "selectedVersion": 0
+        },
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/logo.png",
+                    "menuIcon": true,
+                    "name": "IMAGE_MENU_ICON",
+                    "type": "png"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "diorite",
+            "emery",
+            "flint"
+        ],
+        "uuid": "1d2647c3-26a0-4b9c-9470-a5c275a8e063",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "1.4.0"
+}
